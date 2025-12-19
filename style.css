@@ -1,0 +1,406 @@
+/* --- GLOBAL STYLES & NEW PASTEL PALETTE --- */
+:root {
+    --primary-color: #D94A8C;
+    --secondary-color: #A3D2CA;
+    --bg-light: #FAF3E0;
+    --card-bg: #FFFFFF;
+    --text-dark: #4A4A4A;
+    --text-light: #fff;
+    --border-color: #E0E0E0;
+    --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    --success-color: #2a9d8f;
+    --warning-color: #e76f51;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-dark);
+    line-height: 1.6;
+    background-color: var(--bg-light);
+}
+
+/* --- PAGE 1: index.html STYLES --- */
+header { position: absolute; top: 0; left: 0; width: 100%; padding: 1.5rem 5%; z-index: 10; }
+nav { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 1.8rem; font-weight: 700; color: var(--primary-color); }
+main#homepage {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--text-light);
+    padding: 0 2rem;
+    position: relative;
+    cursor: pointer; /* Add a cursor to show it's clickable */
+    overflow: hidden;
+}
+.image-column {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    opacity: 100%;
+}
+.image-column::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+#col1 { background-image: url('images/tajmahal.jpg'); }
+#col2 { background-image: url('images/redfort.jpg'); }
+#col3 { background-image: url('images/waterfall.jpg'); }
+#col4 { background-image: url('images/himalayan_mountains.jpg'); }
+
+
+.background-split {
+    display: flex;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    /* transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1); */
+    transition: transform 0.9s ease-in-out;
+    z-index: 1; /* Above the images, but below the hero content */
+    will-change: transform;
+}
+#left-split { left: 0; transform: translateX(0); }
+#right-split { right: 0; transform: translateX(0); }
+#left-split.active { transform: translateX(-100%); }
+#right-split.active { transform: translateX(100%); }
+
+.hero-content {
+    z-index: 5;
+    position: relative;
+    transition: opacity 0.5s ease-out; /* Add fade transition */
+    pointer-events: none; /* Make content not clickable, so main element receives the click */
+}
+.hero-content.fade-out { opacity: 0; }
+.hero-content h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+.hero-content p { font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem; }
+.cta-box { display: none; } /* Hide the button container */
+
+#wizard { min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 2rem; }
+
+/* --- SHARED CARD & FORM STYLES --- */
+.wizard-card {
+    background: var(--card-bg); border-radius: 20px;
+    box-shadow: var(--card-shadow); animation: fadeIn 0.5s ease-in-out;
+    width: 100%; max-width: 700px; overflow: hidden; position: relative;
+}
+.wizard-card h2 { font-size: 2rem; margin-bottom: 2rem; color: var(--primary-color); text-align: center; }
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-dark); }
+.form-group input, .form-group textarea {
+    width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color);
+    border-radius: 10px; font-size: 1rem; font-family: 'Montserrat', sans-serif;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.form-group input:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(217, 74, 140, 0.2);
+}
+.form-group textarea { resize: vertical; min-height: 100px; }
+.budget-input { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 10px; padding-left: 1rem; }
+.budget-input span { font-size: 1rem; font-weight: 600; }
+.budget-input input { border: none; outline: none; }
+.wizard-btn {
+    width: 100%; background: var(--primary-color); color: var(--text-light);
+    border: none; padding: 1rem; font-size: 1.1rem; font-weight: 600;
+    border-radius: 10px; cursor: pointer; transition: background-color 0.3s ease;
+}
+.wizard-btn:hover { background: #C5377B; }
+
+#auth-dialog { min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 2rem; }
+.auth-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    animation: fadeIn 0.5s ease-in-out;
+    width: 100%;
+    max-width: 450px; /* Smaller card for login */
+    padding: 2.5rem;
+    text-align: center;
+    position: relative;
+}
+.auth-content h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+.auth-content p {
+    margin-bottom: 2rem;
+    color: #666;
+}
+.auth-switch {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+}
+.auth-switch a {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+/* --- PAGE 2: planner.html STYLES --- */
+.planner-body { background-color: var(--bg-light); }
+.planner-header { position: static; background-color: var(--card-bg); box-shadow: 0 4px 15px rgba(0,0,0,0.06); padding: 1rem 5%; }
+.planner-header .logo { color: var(--primary-color); }
+.new-trip-btn {
+    background: var(--primary-color); color: var(--text-light);
+    padding: 0.5rem 1.5rem; border-radius: 20px;
+    text-decoration: none; font-weight: 600; transition: all 0.2s ease;
+}
+.new-trip-btn:hover { background: #C5377B; }
+main#trip-planner { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
+.planner-title { text-align: center; margin-bottom: 2.5rem; }
+.planner-title h1 { font-size: 2.5rem; color: var(--text-dark); font-weight: 700; }
+
+/* Dashboard & Progress Bar Styles */
+.dashboard-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem; margin-bottom: 3rem;
+}
+.summary-card, .progress-card { background: var(--card-bg); padding: 1.5rem; border-radius: 15px; box-shadow: var(--card-shadow); }
+.summary-card h3 { color: #888; font-size: 1rem; margin-bottom: 0.5rem; font-weight: 600; }
+.summary-card p { font-size: 2rem; font-weight: 700; color: var(--text-dark); }
+.summary-card p.spent { color: var(--warning-color); }
+.summary-card p.remaining { color: var(--success-color); }
+.progress-card-header { display: flex; justify-content: space-between; margin-bottom: 0.75rem; }
+.progress-card label { font-weight: 600; }
+.progress-card span { font-weight: 600; color: var(--primary-color); }
+.progress-bar-container { height: 12px; width: 100%; background-color: #EFEFEF; border-radius: 6px; overflow: hidden; }
+.progress-bar-fill {
+    height: 100%; width: 0%; background-color: var(--primary-color);
+    border-radius: 6px; transition: width 0.5s ease-in-out, background-color 0.5s ease;
+}
+
+/* Main Planner Layout */
+.planner-main-content { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2.5rem; }
+.suggestions-panel h2, .itinerary-panel h2 { margin-bottom: 1.5rem; font-size: 1.8rem; }
+.suggestions-container { display: flex; flex-direction: column; gap: 1rem; max-height: 800px; overflow-y: auto; padding-right: 10px; }
+.suggestion-card {
+    background: var(--card-bg); padding: 1rem; border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color);
+}
+.suggestion-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+.suggestion-card p { font-size: 0.9rem; color: #666; margin-bottom: 1rem; }
+.place-type { background-color: var(--bg-light); color: var(--primary-color); font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 5px; }
+.suggestion-footer { display: flex; justify-content: space-between; align-items: center; }
+.suggestion-footer span b { color: var(--text-dark); }
+.add-suggestion-btn {
+    background: var(--secondary-color); color: var(--text-light); border: none;
+    border-radius: 8px; padding: 0.4rem 1rem; font-weight: 600; cursor: pointer;
+    transition: background-color 0.2s;
+}
+.add-suggestion-btn:hover { background: #82C0B8; }
+
+.entry-form-container { margin-bottom: 2.5rem; }
+.form-grid-small { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+#itinerary-list { display: flex; flex-direction: column; gap: 1.5rem; }
+.itinerary-item {
+    background: var(--card-bg); padding: 1.5rem; border-radius: 15px;
+    box-shadow: var(--card-shadow); animation: fadeIn 0.4s ease; transition: transform 0.2s ease;
+    border-left: 5px solid var(--secondary-color);
+}
+.itinerary-item:hover { transform: translateY(-5px); }
+.item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+.item-place-date h3 { font-size: 1.4rem; color: var(--primary-color); margin-bottom: 0.25rem; }
+.item-place-date span { color: #666; font-weight: 600; }
+.item-cost { font-size: 1.5rem; font-weight: 700; color: var(--text-dark); white-space: nowrap; }
+.item-notes p { color: #555; white-space: pre-wrap; }
+.empty-state { text-align: center; padding: 3rem; color: #888; background: var(--card-bg); border-radius: 15px; }
+
+/* NEW/MODIFIED STYLES FOR REMOVE BUTTON */
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+.remove-item-btn {
+    background: none;
+    border: none;
+    color: var(--warning-color);
+    font-size: 2rem;
+    font-weight: 300;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0.25rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+.remove-item-btn:hover {
+    color: #c14a2c;
+    transform: scale(1.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .planner-main-content { grid-template-columns: 1fr; }
+    .suggestions-panel { margin-bottom: 3rem; }
+}
+@media (max-width: 768px) {
+    .form-grid-small { grid-template-columns: 1fr; }
+}
+
+/* Utility & Animation */
+.hidden { display: none !important; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.wizard-card {
+    overflow: hidden; /* Hides the step that is outside the card */
+}
+
+.wizard-steps-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.wizard-step {
+    width: 100%;
+    flex-shrink: 0; /* Prevents steps from shrinking */
+    padding: 2.5rem;
+}
+/* Button group for back/next */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.wizard-btn.secondary {
+    background-color: #f0f0f0;
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+}
+
+.wizard-btn.secondary:hover {
+    background-color: #e0e0e0;
+}
+
+.theme-toggle-container {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    z-index: 10;
+}
+
+.theme-toggle {
+    display: none; /* Hide the actual checkbox */
+}
+
+.theme-toggle-label {
+    cursor: pointer;
+    display: block;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--text-dark);
+    /* This creates the moon shape */
+    box-shadow: inset 9px -8px 0px 0px var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:checked + .theme-toggle-label {
+    background: var(--primary-color);
+    box-shadow: inset 15px -15px 0px 15px transparent;
+}
+
+body.dark-theme {
+    background-color: #000000;
+}
+
+body.dark-theme .wizard-card,
+body.dark-theme .auth-card {
+    background-color: #1E1E1E; /* Dark Grey Modal */
+    --card-bg: #1E1E1E;
+    --text-dark: #FFFFFF;
+    --border-color: #444444;
+}
+
+body.dark-theme h2 {
+    color: #FFFFFF;
+}
+
+body.dark-theme .form-group label {
+    color: #FFFFFF;
+}
+
+body.dark-theme .form-group input,
+body.dark-theme .budget-input {
+    background-color: #2b2b2b;
+    color: #FFFFFF;
+    border-color: var(--border-color);
+}
+
+body.dark-theme .form-group input:focus {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    border-color: #FFFFFF;
+}
+
+body.dark-theme .form-group input::placeholder {
+    color: #888;
+}
+
+body.dark-theme .budget-input span {
+    color: #FFFFFF;
+}
+
+body.dark-theme .wizard-btn {
+    background-color: #333333;
+    color: #FFFFFF;
+}
+
+body.dark-theme .wizard-btn:hover {
+    background-color: #444444;
+}
+
+body.dark-theme .wizard-btn.secondary {
+    background-color: #222222;
+    border-color: #444444;
+    color: #FFFFFF;
+}
+
+body.dark-theme .wizard-btn.secondary:hover {
+    background-color: #333333;
+}
+
+/*hjj*/
+body.dark-theme .auth-content h2 {
+    color: #FFFFFF;
+}
+body.dark-theme .auth-content p {
+    color: #b0b0b0;
+}
+body.dark-theme .auth-switch {
+    color: #b0b0b0;
+}
+body.dark-theme .auth-switch a {
+    color: var(--secondary-color);
+}
+
+/* Adjust the toggle icon colors for dark mode */
+body.dark-theme .theme-toggle-label {
+    background: #FFFFFF;
+    box-shadow: inset 9px -8px 0px 0px #000000;
+}
+
+body.dark-theme .theme-toggle:checked + .theme-toggle-label {
+    background: #FFFFFF;
+    box-shadow: inset 15px -15px 0px 15px transparent;
+}
+
+body.dark-theme .logo {
+    color: #ffffff;
+}

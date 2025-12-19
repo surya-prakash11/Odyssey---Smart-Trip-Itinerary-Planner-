@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Odyssey — Your Aesthetic Trip Planner</title>
+
+<link rel="icon" type="image/png" href="Odyssey1.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<style>
+  /* [NEW] AESTHETIC REVAMP FOR Odyssey */
+
+  /* 1. Root Variables & Foundation */
+  :root {
+    --bg-dark: #0D1117; /* GitHub Dark-like background */
+    --bg-gradient: linear-gradient(180deg, #161b22 0%, #0D1117 100%);
+    --surface-glass: rgba(22, 27, 34, 0.6); /* Semi-transparent surface */
+    --border-color: rgba(240, 246, 252, 0.1);
+    --border-color-subtle: rgba(240, 246, 252, 0.05);
+    
+    --text-primary: #e6edf3;
+    --text-secondary: #7d8590;
+    --text-heading: #ffffff;
+    
+    --accent-primary: #8A5CF5; /* Vibrant Purple */
+    --accent-secondary: #00A99D; /* Rich Teal */
+    --accent-gradient: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    
+    --shadow-glow: 0 0 25px rgba(138, 92, 245, 0.25);
+    --shadow-card: 0 8px 30px rgba(0,0,0,0.2);
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --backdrop-blur: 12px; /* Key for glassmorphism */
+    --transition-speed: 0.3s;
+  }
+
+  /* 2. Global Styles & Typography */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-primary);
+    background: var(--bg-dark) url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"%3E%3Cg fill-rule="evenodd"%3E%3Cg fill="%23161b22" fill-opacity="0.4"%3E%3Cpath d="M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
+  
+  h1, h2, h3, h4 { color: var(--text-heading); font-weight: 600; letter-spacing: -0.5px; }
+  h1 { font-size: 3rem; margin-bottom: 1rem; }
+  h2 { font-size: 1.75rem; margin-bottom: 1.5rem; }
+  h3 { font-size: 1.1rem; }
+  
+  ::selection { background-color: var(--accent-primary); color: white; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+  
+  /* 3. Reusable Components (Buttons, Forms) */
+  .cta-button, .wizard-btn {
+    background: var(--accent-gradient);
+    color: #fff;
+    padding: 0.9rem 1.8rem;
+    border-radius: var(--radius-md);
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1.05rem;
+    box-shadow: var(--shadow-glow);
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .cta-button:hover, .wizard-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 0 35px rgba(138, 92, 245, 0.4);
+  }
+
+  .sign-out-button {
+    /* position: fixed;
+    top: 1.25rem;
+    right: 1.5rem;
+    z-index: 1500; */
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+  }
+  .sign-out-button:hover {
+    background-color: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label { display: block; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.4rem; font-weight: 500; }
+  .form-group input, .form-group select, .form-group textarea, .select2-container--default .select2-selection--single {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-md);
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(138, 92, 245, 0.2);
+  }
+
+  /* 4. Header & Hero Section */
+  header.nav { 
+    padding: 1.25rem 0; 
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+  }
+  .logo { 
+    display: flex;
+    align-items: center;
+    font-weight: 700; 
+    font-size: 1.5rem; 
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logo img {
+    height: 32px;
+    margin-right: 8px;
+  }
+  
+  main#homepage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 1rem;
+    background-image: linear-gradient(180deg, rgba(13, 17, 23, 0.4), rgba(13, 17, 23, 0.9)), url('https://images.unsplash.com/photo-1528459146496-ad4508d3e113?q=80&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+  }
+  .hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .hero-content p {
+    color: #aeb8c5;
+    max-width: 680px;
+    margin: 0 auto 2rem;
+    font-size: 1.15rem;
+  }
+  
+  /* 5. Auth Dialog */
+  #auth-dialog {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+    padding: 1.25rem;
+    background: rgba(13, 17, 23, 0.5);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+  }
+  #auth-dialog:not(.hidden) { opacity: 1; visibility: visible; }
+  
+  #auth-dialog .auth-card {
+    background: var(--surface-glass);
+    backdrop-filter: var(--backdrop-blur);
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    max-width: 480px;
+    width: 100%;
+    box-shadow: var(--shadow-card);
+    transform: scale(0.95);
+    transition: transform var(--transition-speed) ease;
+  }
+  #auth-dialog:not(.hidden) .auth-card { transform: scale(1); }
+
+  #auth-dialog h2 {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  #auth-dialog p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+  #auth-dialog .form-group label { color: var(--text-secondary); }
+  #auth-dialog .wizard-btn { width: 100%; }
+  #auth-dialog a {
+    color: var(--accent-primary);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+  /* 6. Wizard */
+  #wizard {
+    padding: 6rem 1rem;
+    display: flex;
+    justify-content: center;
+    background: var(--bg-gradient);
+  }
+  .wizard-card {
+    background: var(--surface-glass);
+    backdrop-filter: var(--backdrop-blur);
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 600px;
+    box-shadow: var(--shadow-card);
+  }
+  .wizard-card h2 { text-align: center; }
+  .wizard-btn { width: 100%; }
+
+  /* Select2 Customization */
+  .select2-container--default .select2-selection--single { height: auto; }
+  .select2-container--default .select2-selection--single .select2-selection__rendered { line-height: 1.5; color: var(--text-primary); }
+  .select2-dropdown { background: #161b22; border: 1px solid var(--border-color); border-radius: var(--radius-md); }
+  .select2-container--default .select2-search--dropdown .select2-search__field { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: var(--text-primary); }
+  .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable { background-color: var(--accent-primary); }
+  
+  /* 7. Planner Section */
+  .planner-header {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .new-trip-btn {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+  }
+  .new-trip-btn:hover { background-color: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+  
+  .planner-container { padding-top: 2rem; padding-bottom: 4rem; }
+  .planner-title h1 {
+    font-size: 2.5rem;
+    letter-spacing: -1px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 2rem;
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .summary-card, .progress-card {
+    background: var(--surface-glass);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    backdrop-filter: var(--backdrop-blur);
+    box-shadow: var(--shadow-card);
+  }
+  .summary-card h3 { color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem; }
+  .summary-card p { font-size: 2rem; font-weight: 700; color: var(--text-heading); }
+  
+  .progress-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; }
+  .progress-card-header label { font-weight:500; font-size:0.9rem; }
+  .progress-card-header span { font-size:0.9rem; color:var(--text-secondary); }
+  
+  .progress-bar-container { height: 10px; background: rgba(0,0,0,0.3); border-radius: 5px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; width: 0; background: var(--accent-gradient); transition: width .5s ease; border-radius: 5px; }
+
+  .planner-main-content { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
+  
+  .suggestions-panel h2, .itinerary-panel h2 { 
+    font-size: 1.5rem; 
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+  }
+  
+  .suggestion-card {
+    background: rgba(22, 27, 34, 0.4);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color-subtle);
+    margin-bottom: 1rem;
+    transition: border-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+  }
+  .suggestion-card:hover { border-color: var(--border-color); transform: translateY(-2px); }
+  
+  .place-type {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(138, 92, 245, 0.1);
+    color: var(--accent-primary);
+    margin-left: 8px;
+    font-weight: 600;
+  }
+  .add-suggestion-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color var(--transition-speed) ease;
+  }
+  .add-suggestion-btn:hover { background: rgba(255,255,255,0.1); }
+  
+  .itinerary-item {
+    background: var(--surface-glass);
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+  }
+  
+  .entry-form-container, .hotel-form {
+    background: var(--surface-glass);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    margin-bottom: 2.5rem;
+  }
+  
+  .remove-btn {
+    margin-top: 8px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+  }
+  .remove-btn:hover { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+  .empty-state {
+    text-align: center;
+    padding: 2.5rem;
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    color: var(--text-secondary);
+    background: rgba(22, 27, 34, 0.2);
+  }
+  
+  .hidden { display: none !important; }
+
+  .extra-sections { margin-top: 3rem; padding-bottom: 4rem; }
+  .extra-sections h3 { color: var(--text-secondary); margin-bottom: 1rem; font-size: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+  .map-iframe { border: 1px solid var(--border-color); border-radius: var(--radius-lg); }
+   
+  .authenticity-score-container {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .authenticity-score-bar {
+    height: 6px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+
+  .authenticity-score-fill {
+    height: 100%;
+    width: 0;
+    background: var(--accent-secondary);
+    transition: width .5s ease;
+    border-radius: 3px;
+  }
+
+  #crowding-index-badge {
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1.5rem;
+    display: inline-block;
+    color: var(--bg-dark);
+  }
+
+  .crowding-low { background-color: #2ecc71; }
+  .crowding-moderate { background-color: #f39c12; }
+  .crowding-high { background-color: #e74c3c; }
+
+  @media(max-width: 900px) {
+    .planner-main-content { grid-template-columns: 1fr; }
+    .hero-content h1 { font-size: 2.5rem; }
+  }
+</style>
+</head>
+<body>
+<button id="sign-out-btn-wizard" class="sign-out-button hidden" style="position: fixed; top: 1.25rem; right: 1.5rem; z-index: 1500;">Sign Out</button>
+<div id="setup-section">
+  <header class="nav container"><div class="logo"> <img src="Odyssey1.png" alt=" "> Odyssey</div></header>
+  <main id="homepage">
+    <div class="hero-content">
+      <h1>Weave Your Perfect Indian Getaway</h1>
+      <p>Intelligent suggestions, seamless planning, and effortless budgeting. Your next adventure starts here.</p>
+      <button id="start-planning-btn" class="cta-button">Start Planning Now</button>
+    </div>
+  </main>
+
+  <div id="auth-dialog" class="hidden" aria-hidden="true">
+    <div class="auth-card">
+      <div class="auth-content" id="login-view">
+        <h2>Welcome Back</h2>
+        <p>Log in to access your saved trips and continue planning.</p>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-email">Username</label>
+            <input id="login-email" type="email" placeholder="Enter your username" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input id="login-password" type="password" placeholder="••••••••" required>
+          </div>
+          <button class="wizard-btn" type="submit">Login</button>
+        </form>
+        <p style="margin-top:1rem; text-align:center;">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+      </div>
+
+      <div class="auth-content hidden" id="signup-view">
+        <h2>Create Your Account</h2>
+        <p>Join Odyssey to save your trips and sync across devices.</p>
+        <form id="signup-form">
+          <div class="form-group">
+            <label for="signup-email">Username</label>
+            <input id="signup-email" type="email" placeholder="Create a username" required>
+          </div>
+          <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input id="signup-password" type="password" placeholder="Create a strong password" required>
+          </div>
+          <button class="wizard-btn" type="submit">Create Account</button>
+        </form>
+        <p style="margin-top:1rem; text-align:center;">Already have an account? <a href="#" id="show-login">Log In</a></p>
+      </div>
+      <div class="auth-content hidden" id="new-place-view">
+        <h2>Add a New Destination</h2>
+        <p>Enter the name of the city you want to plan a trip for.</p>
+        <form id="new-place-form">
+          <div class="form-group">
+            <label for="new-place-name">City Name</label>
+            <input id="new-place-name" type="text" placeholder="......" required>
+          </div>
+          <button class="wizard-btn" type="submit">Add and Select</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="wizard" class="hidden">
+    <div class="wizard-card container">
+      <h2>Let's Plan Your Next Adventure</h2>
+      <div class="form-group">
+        <label for="destination-select">Where are you heading?</label>
+        <select id="destination-select"></select>
+      </div>
+      <div class="form-group">
+        <label for="budget">What's your total budget? (₹)</label>
+        <input id="budget" type="number" placeholder="e.g., 50000">
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label for="duration">Trip Duration (days)</label>
+          <input id="duration" type="number" placeholder="e.g., 5">
+        </div>
+        <div class="form-group">
+          <label for="members">Number of travellers</label>
+          <input id="members" type="number" placeholder="e.g., 2">
+        </div>
+      </div>
+      <button id="create-trip-btn" class="wizard-btn">Build My Planner →</button>
+    </div>
+  </div>
+</div>
+
+<div id="planner-section" class="hidden">
+  <header class="planner-header container">
+    <div class="logo"><img src="Odyssey1.png" alt=" "> Odyssey</div>
+    <div class="header-actions">
+      <button id="sign-out-btn-planner" class="sign-out-button hidden">Sign Out</button>
+      <a href="#" id="new-trip-btn" class="new-trip-btn">Start a New Trip</a>
+    </div>
+  </header>
+
+  <main class="planner-container container">
+    <div class="planner-title"><h1 id="trip-destination-title"></h1></div>
+
+    <div class="dashboard-grid">
+      <div class="summary-card"><h3>Total Budget</h3><p id="total-budget">₹0</p></div>
+      <div class="summary-card"><h3>Amount Spent</h3><p id="amount-spent">₹0</p></div>
+      <div class="summary-card"><h3>Budget Remaining</h3><p id="budget-remaining">₹0</p></div>
+      <div class="summary-card"><h3>Crowding Index</h3><p id="crowding-index-badge">N/A</p></div>
+      <div class="progress-card">
+        <div class="progress-card-header"><label>Budget Usage</label><span id="budget-progress-text">0% Spent</span></div>
+        <div class="progress-bar-container"><div id="budget-progress-bar" class="progress-bar-fill"></div></div>
+      </div>
+      <div class="progress-card">
+        <div class="progress-card-header"><label>Trip Timeline</label><span id="days-progress-text">Day 0/0</span></div>
+        <div class="progress-bar-container"><div id="days-progress-bar" class="progress-bar-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="planner-main-content">
+      <aside class="suggestions-panel">
+        <h2>Suggestions & Ideas</h2>
+        <div id="suggestions-container"></div>
+      </aside>
+
+      <section class="itinerary-panel">
+        <div class="entry-form-container">
+          <h2>Add to Itinerary</h2>
+          <div class="form-group">
+            <label for="place-name">Place / Activity</label>
+            <input id="place-name" type="text" placeholder="Select a suggestion or add your own">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-group"><label for="item-date">Date</label><input id="item-date" type="date"></div>
+            <div class="form-group"><label for="item-cost">Cost (₹)</label><input id="item-cost" type="number" placeholder="1500"></div>
+          </div>
+          <div class="form-group"><label for="item-notes">Notes (optional)</label><textarea id="item-notes" rows="2"></textarea></div>
+          <button id="add-item-btn" class="wizard-btn">Add Item</button>
+        </div>
+
+        <div class="hotel-form">
+          <h2>Add Accommodation</h2>
+          <div class="form-group"><label for="hotel-name">Hotel Name</label><input id="hotel-name" type="text"></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+            <div class="form-group"><label for="hotel-checkin">Check-in</label><input id="hotel-checkin" type="date"></div>
+            <div class="form-group"><label for="hotel-nights">Nights</label><input id="hotel-nights" type="number"></div>
+            <div class="form-group"><label for="hotel-cost">Total Cost (₹)</label><input id="hotel-cost" type="number"></div>
+          </div>
+          <div class="form-group"><label for="hotel-people">No. of Guests</label><input id="hotel-people" type="number"></div>
+          <button id="add-hotel-btn" class="wizard-btn">Save Hotel & Add to Itinerary</button>
+        </div>
+
+        <h2>Your Itinerary</h2>
+        <div id="itinerary-list"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div id="extra-sections" class="extra-sections hidden container">
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+      <div>
+          <h3>Map View</h3>
+          <iframe id="city-map" class="map-iframe" style="width:100%; height:300px;" src="" loading="lazy"></iframe>
+      </div>
+      <div>
+          <h3>My Saved Trips</h3>
+          <div id="my-trips-container" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:.8rem"></div>
+      </div>
+  </div>
+  <div style="margin-top:2rem">
+    <h3>Saved Accommodations</h3>
+    <div id="accommodations-container" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:.8rem; margin-top:1rem"></div>
+  </div>
+
+  <div style="margin-top:3rem">
+    <h3>🌱 Cultivate Local Discovery</h3>
+    <div class="entry-form-container" style="margin-bottom:0; max-width: 600px;">
+        <p style="color:var(--text-secondary); margin-top:-1.5rem; margin-bottom:1.5rem; font-size:0.9rem;">Add a unique local spot to the suggestions. Your discoveries help others find authentic experiences.</p>
+        <form id="local-gem-form">
+            <div class="form-group">
+                <label for="gem-name">Provider / Place Name</label>
+                <input id="gem-name" type="text" placeholder="e.g., Raju's Chai Stall" required>
+            </div>
+            <div class="form-group">
+                <label for="gem-city">City</label>
+                <select id="gem-city" required></select>
+            </div>
+            <div class="form-group">
+                <label for="gem-type">Type (e.g., Artisan, Local Food, Storytelling)</label>
+                <input id="gem-type" type="text" placeholder="A niche category" required>
+            </div>
+            <div class="form-group">
+                <label for="gem-description">Description</label>
+                <textarea id="gem-description" rows="2" placeholder="What makes it special?" required></textarea>
+            </div>
+            <button type="submit" class="wizard-btn">Register Provider</button>
+        </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+const CITIES_DATA = {
+    "Ahmedabad": { "places": [
+        { "name":"Sabarmati Ashram","type":"Historic","description":"Mahatma Gandhi's former residence and a center of the Indian freedom struggle.","estimatedCost":0 },
+        { "name":"Adalaj Stepwell","type":"Architecture","description":"An intricately carved five-story stepwell built in 1498.","estimatedCost":0 },
+        { "name":"Kankaria Lake","type":"Leisure","description":"A large artificial lake with a zoo, toy train, and amusement park.","estimatedCost":25 },
+        { "name":"Jama Masjid","type":"Religious","description":"A beautiful 15th-century mosque built by Sultan Ahmed Shah.","estimatedCost":0 },
+        { "name":"Sidi Saiyyed Mosque","type":"Architecture","description":"Famous for its intricately carved stone lattice window, the 'Tree of Life'.","estimatedCost":0 },
+        { "name":"Manek Chowk","type":"Food","description":"A bustling city square that transforms into a vibrant street food market at night.","estimatedCost":300 },
+        { "name":"Calico Museum of Textiles","type":"Museum","description":"One of the world's finest collections of Indian textiles.","estimatedCost":0 }
+    ]},
+    "Agra": { "places": [
+        { "name":"Taj Mahal","type":"Historic","description":"Ivory-white marble mausoleum, a UNESCO World Heritage Site.","estimatedCost":250 },
+        { "name":"Agra Fort","type":"Historic","description":"A massive red sandstone fort, the main residence of Mughal emperors.","estimatedCost":40 },
+        { "name":"Fatehpur Sikri","type":"Historic","description":"An abandoned Mughal city known for its stunning architecture.","estimatedCost":250 },
+        { "name":"Mehtab Bagh","type":"Scenic","description":"A garden complex providing a perfect view of the Taj Mahal at sunset.","estimatedCost":100 },
+        { "name":"Tomb of Itimad-ud-Daulah","type":"Historic","description":"Often called the 'Baby Taj', a precursor to the Taj Mahal's design.","estimatedCost":30 },
+        { "name":"Kinari Bazaar","type":"Shopping","description":"A bustling market located behind Jama Masjid, known for crafts and snacks.","estimatedCost":200 }
+    ]},
+    "Ahmednagar": { "places": [
+        { "name":"Ahmednagar Fort","type":"Historic","description":"A large fort where Jawaharlal Nehru was imprisoned during the Quit India Movement.","estimatedCost":25 },
+        { "name":"Chand Bibi Palace","type":"Historic","description":"The tomb of Salabat Khan II, offering panoramic views of the city.","estimatedCost":15 },
+        { "name":"Cavalry Tank Museum","type":"Museum","description":"A unique museum displaying a vast collection of vintage armored fighting vehicles.","estimatedCost":50 },
+        { "name":"Shirdi (nearby)","type":"Religious","description":"A major pilgrimage site dedicated to the saint Sai Baba.","estimatedCost":100 },
+        { "name":"Shani Shingnapur (nearby)","type":"Religious","description":"A village famous for its temple dedicated to Shani, the planet Saturn.","estimatedCost":50 },
+        { "name":"Harishchandragad","type":"Trekking","description":"A challenging hill fort trek known for its Konkan Kada viewpoint.","estimatedCost":200 }
+    ]},
+    "Aizawl": { "places": [
+        { "name":"Durtlang Hills","type":"Scenic","description":"A collection of hills offering a breathtaking panoramic view of the city.","estimatedCost":0 },
+        { "name":"Solomon's Temple","type":"Religious","description":"A grand white church built by the Kohhran Thianghlim religious group.","estimatedCost":0 },
+        { "name":"Reiek Tlang","type":"Trekking","description":"A mountain peak offering stunning views and a glimpse of traditional Mizo village life.","estimatedCost":100 },
+        { "name":"Mizoram State Museum","type":"Museum","description":"Showcases the history, culture, and traditions of the Mizo people.","estimatedCost":20 },
+        { "name":"KV Paradise","type":"Modern","description":"A modern mausoleum built by a man in memory of his late wife.","estimatedCost":0 },
+        { "name":"Tamdil Lake","type":"Nature","description":"A natural lake perfect for boating and picnics, located amidst a lush forest.","estimatedCost":150 }
+    ]},
+    "Ajmer": { "places": [
+        { "name":"Ajmer Sharif Dargah","type":"Religious","description":"The Sufi shrine of the revered saint, Moinuddin Chishti.","estimatedCost":0 },
+        { "name":"Ana Sagar Lake","type":"Scenic","description":"A beautiful artificial lake with marble pavilions (Baradari) and gardens.","estimatedCost":50 },
+        { "name":"Adhai Din Ka Jhonpra","type":"Historic","description":"A remarkable Indo-Islamic architectural site, once a mosque.","estimatedCost":0 },
+        { "name":"Pushkar Lake (nearby)","type":"Religious","description":"A sacred Hindu lake surrounded by 52 bathing ghats and numerous temples.","estimatedCost":100 },
+        { "name":"Brahma Temple, Pushkar","type":"Religious","description":"One of the very few temples in the world dedicated to Lord Brahma.","estimatedCost":0 },
+        { "name":"Soniji Ki Nasiyan","type":"Religious","description":"A Jain temple known for its stunning golden chamber depicting the Jain concept of the ancient world.","estimatedCost":20 }
+    ]},
+    "Alappuzha": { "places": [
+        { "name":"Backwater Houseboat Cruise","type":"Leisure","description":"Experience the serene Kerala backwaters on an iconic houseboat.","estimatedCost":3000 },
+        { "name":"Alappuzha Beach","type":"Scenic","description":"A picturesque beach with a 150-year-old pier and an old lighthouse.","estimatedCost":0 },
+        { "name":"Marari Beach","type":"Leisure","description":"A quiet and pristine beach, perfect for relaxation and rejuvenation.","estimatedCost":100 },
+        { "name":"Vembanad Lake","type":"Nature","description":"The longest lake in India, offering stunning views and boating opportunities.","estimatedCost":500 },
+        { "name":"Krishnapuram Palace","type":"Historic","description":"A beautiful palace and museum known for its Kerala-style architecture and murals.","estimatedCost":40 },
+        { "name":"Pathiramanal Island","type":"Nature","description":"A small island on Vembanad Lake, a haven for hundreds of rare migratory birds.","estimatedCost":100 }
+    ]},
+    "Aligarh": { "places": [
+        { "name":"Aligarh Muslim University","type":"Architecture","description":"A historic university with impressive Indo-Islamic architecture.","estimatedCost":0 },
+        { "name":"Aligarh Fort","type":"Historic","description":"A fort from the 16th century, also known as 'Dor'.","estimatedCost":10 },
+        { "name":"Sir Syed Academy Museum","type":"Museum","description":"A museum within the AMU campus dedicated to its founder, Sir Syed Ahmad Khan.","estimatedCost":20 },
+        { "name":"Khereshwar Temple","type":"Religious","description":"An ancient temple dedicated to Lord Shiva, especially crowded during Shivratri.","estimatedCost":0 },
+        { "name":"Shekha Jheel","type":"Nature","description":"A bird sanctuary and a popular spot for birdwatchers, especially in winter.","estimatedCost":30 },
+        { "name":"Naqvi Park","type":"Leisure","description":"A popular local park for recreation and relaxation.","estimatedCost":10 }
+    ]},
+    "Alwar": { "places": [
+        { "name":"Bhangarh Fort","type":"Historic","description":"Infamously known as the most haunted place in India, an ancient fort ruin.","estimatedCost":45 },
+        { "name":"Sariska Tiger Reserve","type":"Nature","description":"A national park and tiger reserve located in the Aravalli Hills.","estimatedCost":800 },
+        { "name":"Bala Quila (Alwar Fort)","type":"Historic","description":"A massive fort perched on a hill, offering panoramic views of the city.","estimatedCost":0 },
+        { "name":"Siliserh Lake Palace","type":"Scenic","description":"A stunning lake and a former royal palace, now a heritage hotel.","estimatedCost":100 },
+        { "name":"Moosi Maharani Ki Chhatri","type":"Architecture","description":"An elegant cenotaph with intricate carvings, dedicated to a former queen.","estimatedCost":0 },
+        { "name":"City Palace, Alwar","type":"Historic","description":"A beautiful palace showcasing a blend of Rajput and Mughal architecture.","estimatedCost":20 }
+    ]},
+    "Ambikapur": { "places": [
+        { "name":"Mainpat","type":"Scenic","description":"Known as the 'Shimla of Chhattisgarh', a plateau with Tibetan settlements.","estimatedCost":200 },
+        { "name":"Tiger Point Waterfall","type":"Nature","description":"A beautiful waterfall located near Mainpat, offering scenic views.","estimatedCost":0 },
+        { "name":"Ramgarh and Sita Bengra","type":"Historic","description":"Ancient caves believed to be the world's oldest amphitheater.","estimatedCost":20 },
+        { "name":"Mahamaya Temple","type":"Religious","description":"A revered temple dedicated to Goddess Durga and Lakshmi.","estimatedCost":0 },
+        { "name":"Tattapani","type":"Nature","description":"Famous for its natural hot water springs with supposed medicinal properties.","estimatedCost":50 },
+        { "name":"Deepadih","type":"Historic","description":"An archaeological site with ruins of ancient temples.","estimatedCost":10 }
+    ]},
+    "Amravati": { "places": [
+        { "name":"Chikhaldara","type":"Scenic","description":"The only coffee-growing region in Maharashtra, a serene hill station.","estimatedCost":300 },
+        { "name":"Melghat Tiger Reserve","type":"Nature","description":"A tiger reserve known for its rich biodiversity, located in the Satpura range.","estimatedCost":1000 },
+        { "name":"Gavilgad Fort","type":"Historic","description":"A historic hill fort in Chikhaldara, offering stunning views and history.","estimatedCost":25 },
+        { "name":"Ambadevi Temple","type":"Religious","description":"An ancient temple dedicated to Goddess Amba, considered the city's main deity.","estimatedCost":0 },
+        { "name":"Wadali Talao","type":"Leisure","description":"A popular lake and garden area with a small zoo, ideal for boating.","estimatedCost":40 },
+        { "name":"Bamboo Garden","type":"Nature","description":"A garden showcasing various species of bamboo, perfect for a peaceful walk.","estimatedCost":10 }
+    ]},
+    "Amritsar": { "places": [
+        { "name":"Golden Temple","type":"Religious","description":"The holiest Gurdwara of Sikhism, known for its stunning golden dome and langar.","estimatedCost":0 },
+        { "name":"Wagah Border","type":"Experience","description":"Witness the daily military practice of the Beating Retreat ceremony.","estimatedCost":0 },
+        { "name":"Jallianwala Bagh","type":"Historic","description":"A public garden and a memorial of national importance for the 1919 massacre.","estimatedCost":0 },
+        { "name":"Partition Museum","type":"Museum","description":"The world's first museum dedicated to the stories of the 1947 Partition of India.","estimatedCost":10 },
+        { "name":"Sadda Pind","type":"Culture","description":"A Punjabi cultural village showcasing traditional life, food, and arts.","estimatedCost":750 },
+        { "name":"Gobindgarh Fort","type":"Historic","description":"A historic fort with museums, live performances, and cultural shows.","estimatedCost":150 }
+    ]},
+    "Anantapur": { "places": [
+        { "name":"Lepakshi","type":"Historic","description":"Known for the Veerabhadra temple with its famous hanging pillar and large Nandi statue.","estimatedCost":50 },
+        { "name":"Penukonda Fort","type":"Historic","description":"A hill fort that served as the second capital of the Vijayanagara Empire.","estimatedCost":20 },
+        { "name":"Thimmamma Marrimanu","type":"Nature","description":"A massive banyan tree holding the Guinness World Record for the largest canopy.","estimatedCost":0 },
+        { "name":"Gooty Fort","type":"Historic","description":"One of the oldest hill forts of Andhra Pradesh, built in a shell-like shape.","estimatedCost":25 },
+        { "name":"ISKCON Temple Anantapur","type":"Religious","description":"A beautiful modern temple dedicated to Lord Krishna, shaped like a chariot.","estimatedCost":0 },
+        { "name":"Clock Tower","type":"Landmark","description":"A historic clock tower located in the center of the city.","estimatedCost":0 }
+    ]},
+    "Arrah": { "places": [
+        { "name":"Aranya Devi Temple","type":"Religious","description":"An ancient and highly revered temple dedicated to the forest goddess, Aranya Devi.","estimatedCost":0 },
+        { "name":"Veer Kunwar Singh Kila","type":"Historic","description":"The historic fort and residence of the freedom fighter Veer Kunwar Singh in Jagdishpur.","estimatedCost":10 },
+        { "name":"Maharaja College","type":"Architecture","description":"An old and prestigious college with notable colonial-era architecture.","estimatedCost":0 },
+        { "name":"Jagdishpur Fort","type":"Historic","description":"Associated with the 1857 rebellion, this fort was a stronghold of Kunwar Singh.","estimatedCost":20 },
+        { "name":"Shahi Masjid","type":"Religious","description":"A historic mosque showcasing Mughal architectural influences.","estimatedCost":0 },
+        { "name":"Bihiya Chaur","type":"Nature","description":"A large open field area, good for local outings and relaxation.","estimatedCost":0 }
+    ]},
+    "Asansol": { "places": [
+        { "name":"Maithon Dam","type":"Scenic","description":"A large dam on the Barakar River, popular for boating and its scenic beauty.","estimatedCost":100 },
+        { "name":"Panchet Dam","type":"Scenic","description":"Another major dam in the Damodar Valley Corporation, offering peaceful surroundings.","estimatedCost":50 },
+        { "name":"Kalyaneshwari Temple","type":"Religious","description":"An ancient temple dedicated to Goddess Kalyaneshwari, located near Maithon.","estimatedCost":0 },
+        { "name":"Nehru Park","type":"Leisure","description":"A well-maintained park on the banks of the Damodar river in Burnpur.","estimatedCost":20 },
+        { "name":"Ghagar Buri Chandi Temple","type":"Religious","description":"A revered temple dedicated to the Goddess Chandi, located on a riverbank.","estimatedCost":0 },
+        { "name":"Satabdi Park","type":"Leisure","description":"A local park with recreational facilities and green spaces.","estimatedCost":10 }
+    ]},
+    "Aurangabad": { "places": [
+        { "name":"Ajanta Caves","type":"Historic","description":"A series of 30 rock-cut Buddhist cave monuments, a UNESCO World Heritage site.","estimatedCost":40 },
+        { "name":"Ellora Caves","type":"Historic","description":"A UNESCO site with over 100 caves, featuring Hindu, Buddhist, and Jain monuments.","estimatedCost":40 },
+        { "name":"Bibi Ka Maqbara","type":"Historic","description":"A beautiful mausoleum that strikingly resembles the Taj Mahal.","estimatedCost":25 },
+        { "name":"Daulatabad Fort","type":"Historic","description":"A formidable hill fort known for its military engineering and defenses.","estimatedCost":25 },
+        { "name":"Grishneshwar Jyotirlinga Temple","type":"Religious","description":"One of the 12 sacred Jyotirlinga shrines of Lord Shiva.","estimatedCost":0 },
+        { "name":"Panchakki (Water Mill)","type":"Historic","description":"An ancient water mill from the medieval period, an example of clever engineering.","estimatedCost":10 }
+    ]},
+    "Bagalkot": { "places": [
+        { "name":"Badami Cave Temples","type":"Historic","description":"A complex of beautiful rock-cut cave temples dedicated to Hindu and Jain deities.","estimatedCost":25 },
+        { "name":"Aihole","type":"Historic","description":"Known as the 'Cradle of Indian Architecture', with over 125 ancient temples.","estimatedCost":25 },
+        { "name":"Pattadakal","type":"Historic","description":"A UNESCO World Heritage site with a stunning complex of 7th and 8th-century temples.","estimatedCost":30 },
+        { "name":"Banashankari Amma Temple","type":"Religious","description":"A revered temple dedicated to Goddess Banashankari, known for its unique Dravidian architecture.","estimatedCost":0 },
+        { "name":"Mahakuta Group of Temples","type":"Religious","description":"A complex of ancient Shaivite temples located in a scenic valley.","estimatedCost":10 },
+        { "name":"Almatti Dam","type":"Scenic","description":"A large hydroelectric project on the Krishna River with beautiful gardens.","estimatedCost":20 }
+    ]},
+    "Bangalore": { "places": [
+        { "name":"Lalbagh Botanical Garden","type":"Nature","description":"A historic garden with a famous glass house and a vast collection of tropical plants.","estimatedCost":60 },
+        { "name":"Bangalore Palace","type":"Historic","description":"A majestic palace with Tudor-style architecture and elegant wood carvings.","estimatedCost":450 },
+        { "name":"Cubbon Park","type":"Nature","description":"A vast green expanse in the heart of the city, perfect for walks and relaxation.","estimatedCost":0 },
+        { "name":"Vidhana Soudha","type":"Architecture","description":"An imposing government building showcasing grand Neo-Dravidian architecture.","estimatedCost":0 },
+        { "name":"ISKCON Temple Bangalore","type":"Religious","description":"A stunning modern temple dedicated to Lord Krishna, known for its grandeur.","estimatedCost":0 },
+        { "name":"UB City","type":"Leisure","description":"A luxury collection of high-end retail, dining, and commercial spaces.","estimatedCost":500 },
+        { "name":"Bannerghatta National Park","type":"Nature","description":"A biological park with a zoo, safari, butterfly park, and rescue center.","estimatedCost":300 }
+    ]},
+    "Barasat": { "places": [
+        { "name":"Gandhi Ghat, Barrackpore","type":"Historic","description":"A serene spot on the banks of the Hooghly river with a memorial to Mahatma Gandhi.","estimatedCost":0 },
+        { "name":"Mangal Pandey Park","type":"Historic","description":"A park dedicated to the freedom fighter Mangal Pandey, located in Barrackpore.","estimatedCost":10 },
+        { "name":"Annapurna Temple","type":"Religious","description":"A beautiful replica of the Dakshineswar Kali Temple, located in Titagarh.","estimatedCost":0 },
+        { "name":"Aquatica Water Park","type":"Leisure","description":"A large water theme park and resort for family fun.","estimatedCost":900 },
+        { "name":"Science City, Kolkata","type":"Science","description":"A major science museum with interactive exhibits, an IMAX theatre, and a space odyssey.","estimatedCost":60 },
+        { "name":"New Town Eco Park","type":"Leisure","description":"A vast urban park with themed gardens, a lake, and replicas of the Seven Wonders.","estimatedCost":30 }
+    ]},
+    "Bareilly": { "places": [
+        { "name":"Alakhnath Temple","type":"Religious","description":"A prominent temple dedicated to Lord Shiva, belonging to the Naga sect.","estimatedCost":0 },
+        { "name":"Dargah-e-Ala Hazrat","type":"Religious","description":"A revered shrine of the Islamic scholar Ahmed Raza Khan Barelvi.","estimatedCost":0 },
+        { "name":"Trivatinath Temple","type":"Religious","description":"An ancient temple dedicated to Lord Shiva, believed to be from the Treta Yuga.","estimatedCost":0 },
+        { "name":"Fun City","type":"Leisure","description":"A popular amusement park and entertainment center for families.","estimatedCost":400 },
+        { "name":"Phoenix United Mall","type":"Shopping","description":"A major shopping and entertainment hub in the city.","estimatedCost":300 },
+        { "name":"Company Garden","type":"Nature","description":"A well-maintained park, also known as Gandhi Udyan, for leisure walks.","estimatedCost":10 }
+    ]},
+    "Belgaum": { "places": [
+        { "name":"Belgaum Fort","type":"Historic","description":"An ancient fort with a unique blend of Chalukyan, Deccan, and Indo-Saracenic architecture.","estimatedCost":0 },
+        { "name":"Gokak Falls","type":"Nature","description":"A stunning waterfall on the Ghataprabha River, often called a 'mini Niagara'.","estimatedCost":30 },
+        { "name":"Kamal Basadi","type":"Religious","description":"A unique Jain temple within the Belgaum Fort, known for its lotus-shaped dome.","estimatedCost":0 },
+        { "name":"Kittur Fort & Palace","type":"Historic","description":"The historic fort of Rani Chennamma, a symbol of resistance against the British.","estimatedCost":15 },
+        { "name":"Vajrapoha Falls","type":"Nature","description":"A beautiful cascading waterfall located in the Jamboti forest.","estimatedCost":20 },
+        { "name":"Military Mahadeva Temple","type":"Religious","description":"A serene temple dedicated to Lord Shiva, maintained by the Indian Army.","estimatedCost":0 }
+    ]},
+    "Bengaluru": { "places": [
+        { "name":"Lalbagh Botanical Garden","type":"Nature","description":"A historic garden with a famous glass house and a vast collection of tropical plants.","estimatedCost":60 },
+        { "name":"Bangalore Palace","type":"Historic","description":"A majestic palace with Tudor-style architecture and elegant wood carvings.","estimatedCost":450 },
+        { "name":"Cubbon Park","type":"Nature","description":"A vast green expanse in the heart of the city, perfect for walks and relaxation.","estimatedCost":0 },
+        { "name":"Vidhana Soudha","type":"Architecture","description":"An imposing government building showcasing grand Neo-Dravidian architecture.","estimatedCost":0 },
+        { "name":"ISKCON Temple Bangalore","type":"Religious","description":"A stunning modern temple dedicated to Lord Krishna, known for its grandeur.","estimatedCost":0 },
+        { "name":"UB City","type":"Leisure","description":"A luxury collection of high-end retail, dining, and commercial spaces.","estimatedCost":500 },
+        { "name":"Bannerghatta National Park","type":"Nature","description":"A biological park with a zoo, safari, butterfly park, and rescue center.","estimatedCost":300 }
+    ]},
+    "Bhavnagar": { "places": [
+        { "name":"Takhteshwar Temple","type":"Religious","description":"A beautiful white marble temple located on a small hill, offering city views.","estimatedCost":0 },
+        { "name":"Gaurishankar Lake","type":"Leisure","description":"A serene lake and a popular picnic spot with a palace and gardens.","estimatedCost":10 },
+        { "name":"Palitana Temples (nearby)","type":"Religious","description":"A major Jain pilgrimage site with over 900 temples on Shatrunjaya hills.","estimatedCost":200 },
+        { "name":"Velavadar Blackbuck National Park","type":"Nature","description":"A unique grassland ecosystem, home to a large population of blackbucks.","estimatedCost":400 },
+        { "name":"Barton Library and Museum","type":"Historic","description":"A beautiful old library and museum with a collection of books, artifacts, and fossils.","estimatedCost":5 },
+        { "name":"Gopnath Beach","type":"Scenic","description":"A serene beach known for its natural beauty and a nearby lighthouse.","estimatedCost":50 }
+    ]},
+    "Bhopal": { "places": [
+        { "name":"Van Vihar National Park","type":"Nature","description":"An urban national park located on the banks of the Upper Lake, home to various animals.","estimatedCost":50 },
+        { "name":"Upper Lake (Bhojtal)","type":"Scenic","description":"A large, beautiful lake offering boating, water sports, and scenic views.","estimatedCost":100 },
+        { "name":"Sanchi Stupa (nearby)","type":"Historic","description":"A UNESCO World Heritage site, one of the oldest stone structures in India.","estimatedCost":40 },
+        { "name":"Bhimbetka Rock Shelters","type":"Historic","description":"A UNESCO site featuring prehistoric cave paintings dating back to the Paleolithic era.","estimatedCost":25 },
+        { "name":"Taj-ul-Masajid","type":"Religious","description":"One of the largest mosques in Asia, known for its grand architecture and pink facade.","estimatedCost":0 },
+        { "name":"Bharat Bhavan","type":"Culture","description":"A multi-arts complex that is a center for visual arts, performing arts, and literature.","estimatedCost":20 }
+    ]},
+    "Bhubaneswar": { "places": [
+        { "name":"Lingaraja Temple","type":"Religious","description":"An ancient and magnificent temple dedicated to Lord Shiva, a masterpiece of Kalinga architecture.","estimatedCost":0 },
+        { "name":"Udayagiri and Khandagiri Caves","type":"Historic","description":"Ancient rock-cut caves that served as residential blocks for Jain monks.","estimatedCost":15 },
+        { "name":"Nandankanan Zoological Park","type":"Nature","description":"A large zoo and botanical garden, famous for its white tigers and lion safaris.","estimatedCost":60 },
+        { "name":"Dhauli Giri Shanti Stupa","type":"Religious","description":"A white peace pagoda on a hill, overlooking the site of the Kalinga War.","estimatedCost":0 },
+        { "name":"Rajarani Temple","type":"Architecture","description":"Known as the 'Love Temple' for its intricate and sensuous carvings of nymphs and couples.","estimatedCost":15 },
+        { "name":"Odisha State Museum","type":"Museum","description":"Houses a rich collection of manuscripts, sculptures, and archaeological finds.","estimatedCost":20 }
+    ]},
+    "Bikaner": { "places": [
+        { "name":"Junagarh Fort","type":"Historic","description":"A magnificent fort that has never been conquered, with ornate palaces inside.","estimatedCost":50 },
+        { "name":"Karni Mata Temple","type":"Religious","description":"Famous as the 'Rat Temple', where thousands of holy rats are revered.","estimatedCost":0 },
+        { "name":"Lalgarh Palace","type":"Historic","description":"An impressive red sandstone palace, a blend of Rajput, Mughal, and European styles.","estimatedCost":25 },
+        { "name":"National Research Centre on Camel","type":"Experience","description":"A unique research center where you can learn about camels and try camel milk products.","estimatedCost":30 },
+        { "name":"Gajner Palace","type":"Historic","description":"A stunning lakeside palace, now a heritage hotel, located next to a wildlife sanctuary.","estimatedCost":200 },
+        { "name":"Rampuria Haveli","type":"Architecture","description":"A cluster of beautiful and grand havelis showcasing intricate craftsmanship.","estimatedCost":0 }
+    ]},
+    "Bilaspur": { "places": [
+        { "name":"Achanakmar Tiger Reserve","type":"Nature","description":"A dense forest reserve and part of the larger Achanakmar-Amarkantak Biosphere.","estimatedCost":1200 },
+        { "name":"Ratanpur","type":"Historic","description":"An ancient town known for the Mahamaya Temple and ruins of an old fort.","estimatedCost":20 },
+        { "name":"Malhar","type":"Historic","description":"An important archaeological site with ancient temples and sculptures.","estimatedCost":10 },
+        { "name":"Kanan Pendari Zoological Garden","type":"Nature","description":"A well-maintained zoo and park, popular with families.","estimatedCost":50 },
+        { "name":"Kutaghat Dam","type":"Scenic","description":"A scenic dam on the Kharang River, ideal for picnics and boating.","estimatedCost":30 },
+        { "name":"Bubble Island","type":"Leisure","description":"A recreational island within the city, a popular local hangout spot.","estimatedCost":20 }
+    ]},
+    "Chandigarh": { "places": [
+        { "name":"Rock Garden","type":"Art","description":"A unique sculpture garden created from industrial and home waste by Nek Chand.","estimatedCost":30 },
+        { "name":"Sukhna Lake","type":"Leisure","description":"A serene man-made lake perfect for boating, jogging, and watching the sunset.","estimatedCost":100 },
+        { "name":"Zakir Hussain Rose Garden","type":"Nature","description":"Asia's largest rose garden, with thousands of rose bushes and medicinal plants.","estimatedCost":50 },
+        { "name":"Capitol Complex","type":"Architecture","description":"A UNESCO World Heritage site designed by Le Corbusier, showcasing modernist architecture.","estimatedCost":0 },
+        { "name":"Pinjore Gardens (Yadavindra Gardens)","type":"Historic","description":"A beautiful 17th-century Mughal garden with fountains and pavilions.","estimatedCost":25 },
+        { "name":"Open Hand Monument","type":"Architecture","description":"A symbolic structure designed by Le Corbusier, representing peace and prosperity.","estimatedCost":0 }
+    ]},
+    "Chennai": { "places": [
+        { "name":"Marina Beach","type":"Scenic","description":"The second-longest urban beach in the world, a popular spot for locals.","estimatedCost":0 },
+        { "name":"Kapaleeshwarar Temple","type":"Religious","description":"A stunning Dravidian-style temple dedicated to Lord Shiva in Mylapore.","estimatedCost":0 },
+        { "name":"Fort St. George","type":"Historic","description":"The first English fortress in India, now housing the state legislature and a museum.","estimatedCost":25 },
+        { "name":"Mahabalipuram (nearby)","type":"Historic","description":"A UNESCO site with ancient rock-cut temples, mandapas, and the Shore Temple.","estimatedCost":40 },
+        { "name":"Government Museum","type":"Museum","description":"An impressive museum complex with rich collections of archaeology and art.","estimatedCost":15 },
+        { "name":"Santhome Cathedral Basilica","type":"Religious","description":"A beautiful Roman Catholic basilica built over the tomb of St. Thomas.","estimatedCost":0 }
+    ]},
+    "Coimbatore": { "places": [
+        { "name":"Marudhamalai Hill Temple","type":"Religious","description":"A beautiful temple dedicated to Lord Murugan, located on a scenic hilltop.","estimatedCost":0 },
+        { "name":"Adiyogi Shiva Statue","type":"Modern","description":"A 112-foot statue of Lord Shiva, recognized by Guinness World Records as the largest bust sculpture.","estimatedCost":0 },
+        { "name":"Siruvani Waterfalls and Dam","type":"Nature","description":"Known for the sweet taste of its water, a scenic spot for nature lovers.","estimatedCost":50 },
+        { "name":"Gedee Car Museum","type":"Museum","description":"A fascinating museum for car enthusiasts, showcasing a collection of vintage and unique cars.","estimatedCost":100 },
+        { "name":"Vydehi Falls","type":"Nature","description":"A serene and beautiful waterfall located on the outskirts of the city.","estimatedCost":20 },
+        { "name":"VOC Park and Zoo","type":"Leisure","description":"A popular recreational spot with a park, zoo, and aquarium for families.","estimatedCost":30 }
+    ]},
+    "Cuttack": { "places": [
+        { "name":"Barabati Fort","type":"Historic","description":"The ruins of a 14th-century fort on the banks of the Mahanadi river.","estimatedCost":0 },
+        { "name":"Cuttack Chandi Temple","type":"Religious","description":"A revered ancient temple dedicated to the city's presiding deity, Goddess Chandi.","estimatedCost":0 },
+        { "name":"Odisha Maritime Museum","type":"Museum","description":"Located on the site of an old workshop, it showcases the state's maritime history.","estimatedCost":25 },
+        { "name":"Dhabaleswar Island","type":"Religious","description":"A scenic island in the Mahanadi river with a temple dedicated to Lord Shiva.","estimatedCost":50 },
+        { "name":"Netaji Birth Place Museum","type":"Historic","description":"The ancestral home of Subhas Chandra Bose, converted into a museum.","estimatedCost":10 },
+        { "name":"Stone Revetment","type":"Engineering","description":"A historic 11th-century stone wall built to protect the city from floods.","estimatedCost":0 }
+    ]},
+    "Dehradun": { "places": [
+        { "name":"Robber's Cave (Guchu Pani)","type":"Nature","description":"A natural river cave formation where water flows through a narrow gorge.","estimatedCost":30 },
+        { "name":"Sahastradhara","type":"Nature","description":"A scenic spot known for its waterfalls and sulphur springs with medicinal value.","estimatedCost":0 },
+        { "name":"Mindrolling Monastery","type":"Religious","description":"A large and beautiful Tibetan Buddhist monastery with a tall stupa and gardens.","estimatedCost":0 },
+        { "name":"Forest Research Institute (FRI)","type":"Architecture","description":"A premier forestry institution with impressive colonial architecture and museums.","estimatedCost":25 },
+        { "name":"Tapkeshwar Temple","type":"Religious","description":"An ancient cave temple dedicated to Lord Shiva, where water naturally drips on the Shivalinga.","estimatedCost":0 },
+        { "name":"Malsi Deer Park","type":"Nature","description":"A small zoological park with deer, birds, and an aquarium, ideal for families.","estimatedCost":20 }
+    ]},
+    "Dhanbad": { "places": [
+        { "name":"Maithon Dam","type":"Scenic","description":"A large dam on the Barakar River, popular for boating and its scenic beauty.","estimatedCost":100 },
+        { "name":"Panchet Dam","type":"Scenic","description":"Another major dam in the Damodar Valley Corporation, offering peaceful surroundings.","estimatedCost":50 },
+        { "name":"Topchanchi Lake","type":"Nature","description":"A beautiful artificial lake surrounded by green hills, a popular picnic spot.","estimatedCost":20 },
+        { "name":"Bhatinda Fall","type":"Nature","description":"A scenic waterfall surrounded by lush greenery, perfect for a day trip.","estimatedCost":0 },
+        { "name":"Shakti Mandir","type":"Religious","description":"A prominent temple dedicated to Goddess Durga, known for its eternal flame.","estimatedCost":0 },
+        { "name":"Birsa Munda Park","type":"Leisure","description":"A well-maintained park with rides, a toy train, and recreational facilities.","estimatedCost":30 }
+    ]},
+    "Dharwad": { "places": [
+        { "name":"Nuggikeri Hanuman Temple","type":"Religious","description":"A famous temple dedicated to Lord Hanuman, located by a beautiful lake.","estimatedCost":0 },
+        { "name":"Unkal Lake","type":"Scenic","description":"A picturesque lake in Hubballi with a statue of Swami Vivekananda at its center.","estimatedCost":30 },
+        { "name":"Chandramouleshwara Temple","type":"Historic","description":"A 900-year-old temple from the Chalukyan era, dedicated to Lord Shiva.","estimatedCost":0 },
+        { "name":"Karnataka University Campus","type":"Architecture","description":"A sprawling and beautiful university campus known for its green environment.","estimatedCost":0 },
+        { "name":"Sadhankeri Park","type":"Leisure","description":"A park dedicated to the poet Da. Ra. Bendre, with musical fountains.","estimatedCost":10 },
+        { "name":"Indira Gandhi Glass House Garden","type":"Leisure","description":"A public garden in Hubballi with a large glass house inspired by London's Crystal Palace.","estimatedCost":20 }
+    ]},
+    "Dindigul": { "places": [
+        { "name":"Dindigul Fort","type":"Historic","description":"A 17th-century hill fort offering panoramic views of the city and surroundings.","estimatedCost":25 },
+        { "name":"Palani Murugan Temple (nearby)","type":"Religious","description":"One of the six abodes of Lord Murugan, a major pilgrimage site located on a hill.","estimatedCost":50 },
+        { "name":"Kodaikanal (nearby)","type":"Scenic","description":"A popular hill station known as the 'Princess of Hill Stations'.","estimatedCost":500 },
+        { "name":"Sirumalai Hills","type":"Nature","description":"A range of hills with dense forests, waterfalls, and viewpoints.","estimatedCost":100 },
+        { "name":"Begambur Big Mosque","type":"Religious","description":"A large and historic mosque in the heart of the city.","estimatedCost":0 },
+        { "name":"Anjaneyar Temple","type":"Religious","description":"A temple dedicated to Lord Hanuman, known for its large idol.","estimatedCost":0 }
+    ]},
+    "Durgapur": { "places": [
+        { "name":"Durgapur Barrage","type":"Scenic","description":"A barrage over the Damodar river, offering a scenic and peaceful environment.","estimatedCost":0 },
+        { "name":"Deul Park","type":"Leisure","description":"A riverside park with ancient temples, ideal for picnics and relaxation.","estimatedCost":50 },
+        { "name":"Bhabha Atomic Research Centre","type":"Science","description":"View the impressive structures of one of India's premier nuclear research facilities from outside.","estimatedCost":0 },
+        { "name":"Troika Park","type":"Leisure","description":"A popular amusement park with rides and entertainment for all ages.","estimatedCost":100 },
+        { "name":"Garh Jungle (Dharma Garh)","type":"Historic","description":"The site of an ancient fort and temple, surrounded by forest.","estimatedCost":10 },
+        { "name":"Ram Mandir","type":"Religious","description":"A prominent and well-maintained temple complex in the city.","estimatedCost":0 }
+    ]},
+    "Erode": { "places": [
+        { "name":"Bannari Amman Temple","type":"Religious","description":"A powerful and revered temple dedicated to Goddess Mariamman, located in a forest area.","estimatedCost":20 },
+        { "name":"Kodiveri Dam","type":"Nature","description":"A scenic dam and waterfall on the Bhavani river, a popular picnic spot.","estimatedCost":10 },
+        { "name":"Thindal Murugan Temple","type":"Religious","description":"A hilltop temple dedicated to Lord Murugan, offering panoramic views of Erode.","estimatedCost":0 },
+        { "name":"Sathyamangalam Tiger Reserve","type":"Nature","description":"A wildlife sanctuary and tiger reserve, part of the Western Ghats.","estimatedCost":300 },
+        { "name":"Vellode Birds Sanctuary","type":"Nature","description":"A sanctuary that attracts numerous migratory birds during the winter season.","estimatedCost":25 },
+        { "name":"Perumpallam Dam","type":"Scenic","description":"A serene dam and reservoir offering a peaceful environment.","estimatedCost":0 }
+    ]},
+    "Faridabad": { "places": [
+        { "name":"Surajkund","type":"Historic","description":"An ancient reservoir and the site of the famous Surajkund International Crafts Mela.","estimatedCost":20 },
+        { "name":"Badkhal Lake","type":"Scenic","description":"A scenic lake area surrounded by the Aravalli hills, though often dry.","estimatedCost":0 },
+        { "name":"Raja Nahar Singh Palace","type":"Historic","description":"A historic palace in Ballabhgarh, known for its beautiful architecture.","estimatedCost":10 },
+        { "name":"Crown Interiorz Mall","type":"Shopping","description":"A large mall known for furniture and home decor stores, with a cinema and food court.","estimatedCost":300 },
+        { "name":"Shirdi Sai Baba Temple","type":"Religious","description":"A large and peaceful temple dedicated to Sai Baba.","estimatedCost":0 },
+        { "name":"Town Park","type":"Leisure","description":"A large park in Sector 12, popular for jogging, picnics, and relaxation.","estimatedCost":0 }
+    ]},
+    "Gandhinagar": { "places": [
+        { "name":"Akshardham Temple","type":"Religious","description":"A magnificent temple dedicated to Lord Swaminarayan, with intricate carvings and exhibitions.","estimatedCost":0 },
+        { "name":"Adalaj Stepwell","type":"Architecture","description":"An intricately carved five-story stepwell located just outside Gandhinagar.","estimatedCost":0 },
+        { "name":"Indroda Dinosaur and Fossil Park","type":"Science","description":"Considered India's Jurassic Park, with fossils, life-sized dinosaur models, and a zoo.","estimatedCost":30 },
+        { "name":"Sarita Udyan","type":"Leisure","description":"A popular picnic spot on the banks of the Sabarmati river.","estimatedCost":10 },
+        { "name":"Dandi Kutir Museum","type":"Museum","description":"A unique museum dedicated to the life and teachings of Mahatma Gandhi, built in the shape of a salt mound.","estimatedCost":10 },
+        { "name":"Children's Park","type":"Leisure","description":"A large park in Sector 28 with a mini-train and lake, perfect for families.","estimatedCost":20 }
+    ]},
+    "Gaya": { "places": [
+        { "name":"Mahabodhi Temple (Bodh Gaya)","type":"Religious","description":"UNESCO World Heritage Site, the location where Lord Buddha is said to have attained Enlightenment.","estimatedCost":0 },
+        { "name":"Vishnupad Temple","type":"Religious","description":"An ancient temple dedicated to Lord Vishnu, a major pilgrimage site for Pind Daan rituals.","estimatedCost":0 },
+        { "name":"Great Buddha Statue","type":"Modern","description":"An impressive 80-foot statue of the Buddha in meditation posture in Bodh Gaya.","estimatedCost":0 },
+        { "name":"Dungeshwari Cave Temples","type":"Religious","description":"Caves where Buddha is believed to have meditated for years before going to Bodh Gaya.","estimatedCost":20 },
+        { "name":"Barabar Caves","type":"Historic","description":"The oldest surviving rock-cut caves in India, dating back to the Mauryan period.","estimatedCost":25 },
+        { "name":"Tibetan Refugee Market","type":"Shopping","description":"A market in Bodh Gaya offering a variety of winter wear and Tibetan handicrafts.","estimatedCost":200 }
+    ]},
+    "Ghaziabad": { "places": [
+        { "name":"ISKCON Temple","type":"Religious","description":"A beautiful and serene temple complex dedicated to Lord Krishna.","estimatedCost":0 },
+        { "name":"City Forest","type":"Nature","description":"A large urban forest park with walking trails, lakes for boating, and green spaces.","estimatedCost":30 },
+        { "name":"Swarna Jayanti Park","type":"Leisure","description":"A popular park in Indirapuram with musical fountains, a boat club, and vast lawns.","estimatedCost":20 },
+        { "name":"Shipra Mall","type":"Shopping","description":"One of the major shopping and entertainment destinations in the area.","estimatedCost":400 },
+        { "name":"Drizzling Land","type":"Leisure","description":"An amusement and water park with various rides and pools.","estimatedCost":700 },
+        { "name":"Laxmi Narayan Temple","type":"Religious","description":"A well-known temple in the city, also known as the Birla Mandir.","estimatedCost":0 }
+    ]},
+    "Gorakhpur": { "places": [
+        { "name":"Gorakhnath Temple","type":"Religious","description":"A prominent temple dedicated to the Guru Gorakhnath, the city is named after him.","estimatedCost":0 },
+        { "name":"Gita Press","type":"Historic","description":"A world-renowned publisher of Hindu religious texts, including the Bhagavad Gita.","estimatedCost":0 },
+        { "name":"Kushmi Forest","type":"Nature","description":"A dense forest area with a zoo (Shaheed Ashfaq Ullah Khan Prani Udyan).","estimatedCost":50 },
+        { "name":"Ramgarh Tal Lake","type":"Scenic","description":"A large and scenic lake offering boating and beautiful sunset views.","estimatedCost":100 },
+        { "name":"Vindhyavasini Park","type":"Leisure","description":"A popular local park for recreation, with fountains and green lawns.","estimatedCost":10 },
+        { "name":"Rail Museum","type":"Museum","description":"A museum showcasing the history and heritage of the Indian Railways in the region.","estimatedCost":20 }
+    ]},
+    "Gulbarga": { "places": [
+        { "name":"Gulbarga Fort","type":"Historic","description":"A historic fort with a unique mosque, Jumma Masjid, inspired by the Cordoba mosque in Spain.","estimatedCost":20 },
+        { "name":"Khwaja Bande Nawaz Dargah","type":"Religious","description":"A revered Sufi shrine attracting pilgrims from various faiths.","estimatedCost":0 },
+        { "name":"Sharana Basaveshwara Temple","type":"Religious","description":"A temple dedicated to the 18th-century philosopher and saint, Sharana Basaveshwara.","estimatedCost":0 },
+        { "name":"Buddha Vihar","type":"Religious","description":"A magnificent Buddhist temple and spiritual center with beautiful architecture.","estimatedCost":0 },
+        { "name":"Haft Gumbaz","type":"Historic","description":"A group of seven tombs belonging to the Bahmani sultans.","estimatedCost":10 },
+        { "name":"Chandrampalli Dam","type":"Scenic","description":"A dam on the Bhima River, surrounded by hills, offering a scenic getaway.","estimatedCost":0 }
+    ]},
+    "Guntur": { "places": [
+        { "name":"Amaravati","type":"Historic","description":"An ancient Buddhist site with a grand stupa and a museum showcasing Buddhist art.","estimatedCost":20 },
+        { "name":"Undavalli Caves","type":"Historic","description":"Rock-cut cave temples from the 4th-5th century, known for a large reclining Vishnu statue.","estimatedCost":25 },
+        { "name":"Uppalapadu Bird Sanctuary","type":"Nature","description":"A sanctuary that is a nesting ground for thousands of migratory birds like pelicans and storks.","estimatedCost":30 },
+        { "name":"Kotappakonda","type":"Religious","description":"A holy hill with a temple dedicated to Lord Shiva, famous for its grand Mahashivaratri festival.","estimatedCost":10 },
+        { "name":"Nagarjuna Sagar Dam","type":"Engineering","description":"One of the world's largest masonry dams on the Krishna River.","estimatedCost":50 },
+        { "name":"Ethipothala Falls","type":"Nature","description":"A beautiful cascading waterfall on the Chandravanka river, a tributary of Krishna.","estimatedCost":20 }
+    ]},
+    "Gurgaon": { "places": [
+        { "name":"Cyber Hub","type":"Food","description":"A premium destination for dining and entertainment with a wide range of restaurants and pubs.","estimatedCost":1200 },
+        { "name":"Kingdom of Dreams","type":"Leisure","description":"A spectacular live entertainment and theatre destination.","estimatedCost":1000 },
+        { "name":"Sultanpur National Park","type":"Nature","description":"A bird sanctuary that is a haven for resident and migratory birds, especially in winter.","estimatedCost":40 },
+        { "name":"Sheetla Mata Mandir","type":"Religious","description":"An ancient and highly revered temple dedicated to the goddess Sheetla Mata.","estimatedCost":0 },
+        { "name":"Leisure Valley Park","type":"Leisure","description":"A large park with gardens, fountains, and jogging tracks in the heart of the city.","estimatedCost":0 },
+        { "name":"Aravalli Biodiversity Park","type":"Nature","description":"A restored forest area showcasing the native flora and fauna of the Aravalli range.","estimatedCost":0 }
+    ]},
+    "Guwahati": { "places": [
+        { "name":"Kamakhya Temple","type":"Religious","description":"A famous Hindu pilgrimage site, one of the 51 Shakti Pithas, located on Nilachal Hill.","estimatedCost":0 },
+        { "name":"Umananda Temple","type":"Religious","description":"A Shiva temple situated on Peacock Island in the middle of the Brahmaputra River.","estimatedCost":50 },
+        { "name":"Brahmaputra River Cruise","type":"Leisure","description":"Enjoy a scenic cruise on the mighty Brahmaputra river, especially at sunset.","estimatedCost":500 },
+        { "name":"Assam State Museum","type":"Museum","description":"Showcases the rich cultural history and heritage of Assam.","estimatedCost":20 },
+        { "name":"Pobitora Wildlife Sanctuary","type":"Nature","description":"Known for having the highest density of one-horned rhinoceroses in the world.","estimatedCost":1000 },
+        { "name":"Srimanta Sankaradeva Kalakshetra","type":"Culture","description":"A cultural institution showcasing the artistic heritage of Assam and the Northeast.","estimatedCost":30 }
+    ]},
+    "Gwalior": { "places": [
+        { "name":"Gwalior Fort","type":"Historic","description":"A majestic hill fort that dominates the city skyline, often called the 'Gibraltar of India'.","estimatedCost":75 },
+        { "name":"Jai Vilas Palace Museum","type":"Museum","description":"A splendid palace with European architecture, housing a museum with a vast collection.","estimatedCost":150 },
+        { "name":"Saas Bahu Temple","type":"Architecture","description":"A pair of intricately carved 11th-century temples within the fort complex.","estimatedCost":0 },
+        { "name":"Tansen's Tomb","type":"Historic","description":"The memorial of the legendary musician Tansen, a fine example of Mughal architecture.","estimatedCost":0 },
+        { "name":"Gujari Mahal Archaeological Museum","type":"Museum","description":"Located inside the fort, this museum houses rare sculptures and artifacts.","estimatedCost":10 },
+        { "name":"Gopachal Parvat","type":"Historic","description":"Features colossal rock-cut Jain statues carved into the hillside.","estimatedCost":0 }
+    ]},
+    "Haldia": { "places": [
+        { "name":"Haldia Dock Complex","type":"Modern","description":"See the massive operations of one of India's major sea ports from a distance.","estimatedCost":0 },
+        { "name":"Marine Drive, Haldia","type":"Scenic","description":"A beautiful stretch along the Hooghly river, perfect for evening walks.","estimatedCost":0 },
+        { "name":"Mahishadal Rajbari","type":"Historic","description":"A historic palace with beautiful architecture, gardens, and a museum.","estimatedCost":20 },
+        { "name":"Geonkhali","type":"Scenic","description":"A beautiful spot at the confluence of three rivers, offering serene views.","estimatedCost":50 },
+        { "name":"Tamralipta","type":"Historic","description":"The ancient city of Tamluk, an important archaeological site nearby.","estimatedCost":10 },
+        { "name":"Balughata Riverside Sunset Point","type":"Scenic","description":"A popular local spot for enjoying beautiful sunsets over the river.","estimatedCost":0 }
+    ]},
+    "Hubballi": { "places": [
+        { "name":"Unkal Lake","type":"Scenic","description":"A picturesque lake with a statue of Swami Vivekananda at its center, ideal for boating.","estimatedCost":30 },
+        { "name":"Nrupatunga Betta","type":"Scenic","description":"A hillock offering panoramic views of Hubballi-Dharwad, a popular spot for sunrise/sunset.","estimatedCost":10 },
+        { "name":"Indira Gandhi Glass House Garden","type":"Leisure","description":"A public garden with a large glass house inspired by London's Crystal Palace.","estimatedCost":20 },
+        { "name":"Chandramouleshwara Temple","type":"Historic","description":"A 900-year-old temple from the Chalukyan era, dedicated to Lord Shiva.","estimatedCost":0 },
+        { "name":"Siddharoodha Math","type":"Religious","description":"A revered monastery and spiritual center dedicated to the saint Siddharoodha Swami.","estimatedCost":0 },
+        { "name":"Navagraha Teertha","type":"Religious","description":"A Jain pilgrimage center featuring a massive 61-foot statue of Lord Parshvanatha.","estimatedCost":0 }
+    ]},
+    "Hyderabad": { "places": [
+        { "name":"Charminar","type":"Historic","description":"An iconic 16th-century mosque and monument with four grand arches.","estimatedCost":25 },
+        { "name":"Golconda Fort","type":"Historic","description":"A massive fortified citadel known for its impressive acoustics and history.","estimatedCost":25 },
+        { "name":"Ramoji Film City","type":"Leisure","description":"The world's largest integrated film studio complex, offering tours and entertainment.","estimatedCost":1500 },
+        { "name":"Hussain Sagar Lake","type":"Scenic","description":"A large heart-shaped lake with a giant Buddha statue in the middle.","estimatedCost":100 },
+        { "name":"Salar Jung Museum","type":"Museum","description":"Houses one of the world's largest one-man collections of antiques.","estimatedCost":20 },
+        { "name":"Birla Mandir","type":"Religious","description":"A stunning Hindu temple built of white marble, dedicated to Lord Venkateswara.","estimatedCost":0 }
+    ]},
+    "Imphal": { "places": [
+        { "name":"Loktak Lake","type":"Nature","description":"The largest freshwater lake in Northeast India, famous for its floating phumdis (islands).","estimatedCost":200 },
+        { "name":"Keibul Lamjao National Park","type":"Nature","description":"The world's only floating national park, home to the endangered Sangai deer.","estimatedCost":200 },
+        { "name":"Kangla Fort","type":"Historic","description":"A historic fort and palace situated in the heart of Imphal city.","estimatedCost":10 },
+        { "name":"Ima Keithel (Mother's Market)","type":"Shopping","description":"A unique and vibrant market run exclusively by women.","estimatedCost":100 },
+        { "name":"Manipur State Museum","type":"Museum","description":"Showcases the rich history, culture, and heritage of Manipur.","estimatedCost":10 },
+        { "name":"Shri Govindajee Temple","type":"Religious","description":"A historic Vaishnavite temple with golden domes, dedicated to Krishna.","estimatedCost":0 }
+    ]},
+    "Indore": { "places": [
+        { "name":"Rajwada Palace","type":"Historic","description":"A seven-storied historic palace of the Holkar dynasty, blending Maratha and Mughal styles.","estimatedCost":10 },
+        { "name":"Sarafa Bazaar","type":"Food","description":"A jewelry market by day that transforms into a legendary street food paradise at night.","estimatedCost":300 },
+        { "name":"Lal Bagh Palace","type":"Historic","description":"An opulent palace showcasing a European architectural style and grand interiors.","estimatedCost":10 },
+        { "name":"Kanch Mandir","type":"Architecture","description":"A unique Jain temple intricately decorated with glass mosaics on its walls, floors, and ceilings.","estimatedCost":0 },
+        { "name":"Chappan Dukan","type":"Food","description":"Literally '56 Shops', a famous street offering a wide variety of local snacks and sweets.","estimatedCost":250 },
+        { "name":"Patalpani Waterfall","type":"Nature","description":"A scenic waterfall located a short drive from Indore, especially beautiful post-monsoon.","estimatedCost":20 }
+    ]},
+    "Itanagar": { "places": [
+        { "name":"Ita Fort","type":"Historic","description":"An ancient fort made of bricks, from which the city derives its name.","estimatedCost":25 },
+        { "name":"Ganga Lake (Geker Sinying)","type":"Scenic","description":"A beautiful natural lake surrounded by lush greenery and mountains.","estimatedCost":20 },
+        { "name":"Jawaharlal Nehru State Museum","type":"Museum","description":"Showcases the rich tribal culture and heritage of Arunachal Pradesh.","estimatedCost":10 },
+        { "name":"Buddha Temple","type":"Religious","description":"A serene Buddhist temple located on a hilltop, offering panoramic views.","estimatedCost":0 },
+        { "name":"Indira Gandhi Park","type":"Leisure","description":"A well-maintained park with gardens and walking paths.","estimatedCost":10 },
+        { "name":"Polo Park","type":"Nature","description":"A small botanical garden with a variety of local flora.","estimatedCost":10 }
+    ]},
+    "Jabalpur": { "places": [
+        { "name":"Dhuandhar Falls","type":"Nature","description":"A powerful waterfall on the Narmada river where the water cascades down with a smoky mist.","estimatedCost":0 },
+        { "name":"Marble Rocks at Bhedaghat","type":"Scenic","description":"A stunning gorge on the Narmada river with towering white marble cliffs.","estimatedCost":200 },
+        { "name":"Madan Mahal Fort","type":"Historic","description":"A small but historic fort built by a Gond ruler, perched on a rocky hill.","estimatedCost":15 },
+        { "name":"Chausath Yogini Temple","type":"Religious","description":"A 10th-century temple with 64 carved yoginis, located on a hilltop near Bhedaghat.","estimatedCost":0 },
+        { "name":"Balancing Rock","type":"Nature","description":"A geological marvel where a massive rock is balanced on top of another.","estimatedCost":0 },
+        { "name":"Bargi Dam","type":"Scenic","description":"A major dam on the Narmada river, offering boating and water sports.","estimatedCost":100 }
+    ]},
+    "Jaipur": { "places": [
+        { "name":"Hawa Mahal","type":"Historic","description":"The iconic 'Palace of Winds' with its intricate facade of 953 windows.","estimatedCost":50 },
+        { "name":"Amber Fort","type":"Historic","description":"A magnificent fort-palace with grand courtyards, palaces, and the stunning Sheesh Mahal.","estimatedCost":100 },
+        { "name":"City Palace","type":"Historic","description":"A sprawling palace complex that is still home to the royal family, with museums.","estimatedCost":300 },
+        { "name":"Jantar Mantar","type":"Science","description":"A UNESCO site with a collection of 19 giant astronomical instruments.","estimatedCost":50 },
+        { "name":"Nahargarh Fort","type":"Historic","description":"A fort on the Aravalli hills offering breathtaking views of the Pink City.","estimatedCost":50 },
+        { "name":"Chokhi Dhani","type":"Culture","description":"A mock village resort that offers an immersive Rajasthani cultural experience.","estimatedCost":800 }
+    ]},
+    "Jalandhar": { "places": [
+        { "name":"Devi Talab Mandir","type":"Religious","description":"A revered temple complex dedicated to Goddess Durga, with a large sacred tank.","estimatedCost":0 },
+        { "name":"Wonderland Theme Park","type":"Leisure","description":"A popular amusement and water park with a variety of rides.","estimatedCost":800 },
+        { "name":"Science City, Kapurthala","type":"Science","description":"An engaging science center with interactive exhibits, a dome theatre, and a space gallery.","estimatedCost":100 },
+        { "name":"Jang-e-Azadi Memorial","type":"Museum","description":"A museum and memorial dedicated to the Punjabi community's role in the Indian freedom struggle.","estimatedCost":50 },
+        { "name":"St. Mary's Cathedral","type":"Religious","description":"A beautiful and historic Catholic cathedral in the cantonment area.","estimatedCost":0 },
+        { "name":"Rangla Punjab Haveli","type":"Culture","description":"A traditional Punjabi village themed restaurant offering authentic food and cultural shows.","estimatedCost":600 }
+    ]},
+    "Jalgaon": { "places": [
+        { "name":"Ajanta Caves (nearby)","type":"Historic","description":"A UNESCO World Heritage site with 30 rock-cut Buddhist cave monuments.","estimatedCost":40 },
+        { "name":"Gandhi Research Foundation","type":"Museum","description":"A modern museum and research center dedicated to the life and works of Mahatma Gandhi.","estimatedCost":100 },
+        { "name":"Patnadevi","type":"Nature","description":"A serene spot with an ancient temple and lush green surroundings in the Gautala Sanctuary.","estimatedCost":20 },
+        { "name":"Mehrun Lake","type":"Leisure","description":"A popular local spot for recreation and boating.","estimatedCost":30 },
+        { "name":"Omkareshwar Mandir","type":"Religious","description":"A prominent and beautifully constructed temple in the city.","estimatedCost":0 },
+        { "name":"Swinging Towers of Farkande","type":"Curiosity","description":"An old architectural marvel where one minaret shakes if the other is moved.","estimatedCost":0 }
+    ]},
+    "Jammu": { "places": [
+        { "name":"Vaishno Devi Temple","type":"Religious","description":"One of India's most revered Hindu temples, located in the Trikuta Mountains in Katra.","estimatedCost":100 },
+        { "name":"Bahu Fort","type":"Historic","description":"An ancient fort overlooking the Tawi river, with a temple dedicated to the goddess Bawe Wali Mata.","estimatedCost":10 },
+        { "name":"Raghunath Temple","type":"Religious","description":"A large temple complex in the heart of the city, dedicated to various Hindu deities.","estimatedCost":0 },
+        { "name":"Amar Mahal Palace","type":"Museum","description":"A French chateau-style palace, now a museum with a fine collection of art and books.","estimatedCost":20 },
+        { "name":"Patnitop","type":"Scenic","description":"A popular hill station offering beautiful meadows and panoramic views of the Himalayas.","estimatedCost":300 },
+        { "name":"Mubarak Mandi Palace","type":"Historic","description":"A historic royal residence with a blend of Rajasthani, Mughal, and European architecture.","estimatedCost":0 }
+    ]},
+    "Jamnagar": { "places": [
+        { "name":"Dwarkadhish Temple (Dwarka)","type":"Religious","description":"A major Hindu pilgrimage site, one of the Char Dham, dedicated to Lord Krishna.","estimatedCost":50 },
+        { "name":"Marine National Park","type":"Nature","description":"India's first marine sanctuary, with coral reefs, mangroves, and diverse marine life.","estimatedCost":500 },
+        { "name":"Lakhota Lake & Palace","type":"Historic","description":"A palace situated in the middle of a lake, now housing a museum.","estimatedCost":10 },
+        { "name":"Bala Hanuman Temple","type":"Religious","description":"Famous for the continuous, non-stop chanting of 'Sri Ram, Jai Ram, Jai Jai Ram' since 1964.","estimatedCost":0 },
+        { "name":"Khijadiya Bird Sanctuary","type":"Nature","description":"A unique wetland that attracts a large number of migratory and resident birds.","estimatedCost":40 },
+        { "name":"Pratap Vilas Palace","type":"Architecture","description":"A beautiful palace showcasing European architecture with Indian carvings.","estimatedCost":0 }
+    ]},
+    "Jamshedpur": { "places": [
+        { "name":"Jubilee Park","type":"Leisure","description":"A large park modeled after the Brindavan Gardens of Mysore, with fountains and a zoo.","estimatedCost":0 },
+        { "name":"Dimna Lake","type":"Scenic","description":"An artificial lake at the foothills of the Dalma range, ideal for boating and picnics.","estimatedCost":30 },
+        { "name":"Dalma Wildlife Sanctuary","type":"Nature","description":"A sanctuary on the Dalma hills, known for its elephant population and trekking trails.","estimatedCost":50 },
+        { "name":"Tata Steel Zoological Park","type":"Nature","description":"A well-maintained zoo located inside Jubilee Park.","estimatedCost":40 },
+        { "name":"Sir Dorabji Tata Park","type":"Leisure","description":"A beautiful park with manicured lawns and an annual flower show.","estimatedCost":0 },
+        { "name":"Bhuvaneshwari Temple","type":"Religious","description":"A temple located on a hilltop, offering panoramic views of the city.","estimatedCost":0 }
+    ]},
+    "Jodhpur": { "places": [
+        { "name":"Mehrangarh Fort","type":"Historic","description":"A magnificent and formidable fort that towers over the city, with stunning palaces and museums.","estimatedCost":100 },
+        { "name":"Umaid Bhawan Palace","type":"Historic","description":"A grand yellow sandstone palace, part of which is a luxury hotel and part a museum.","estimatedCost":30 },
+        { "name":"Jaswant Thada","type":"Architecture","description":"An intricate marble cenotaph built in memory of Maharaja Jaswant Singh II.","estimatedCost":30 },
+        { "name":"Mandore Gardens","type":"Historic","description":"The ancient capital of Marwar, with beautiful cenotaphs, temples, and gardens.","estimatedCost":0 },
+        { "name":"Clock Tower & Sardar Market","type":"Shopping","description":"A bustling market area around a historic clock tower, perfect for spices and handicrafts.","estimatedCost":100 },
+        { "name":"Flying Fox Zipline","type":"Adventure","description":"An exhilarating ziplining experience over the Mehrangarh Fort and its lakes.","estimatedCost":1800 }
+    ]},
+    "Kakinada": { "places": [
+        { "name":"Coringa Wildlife Sanctuary","type":"Nature","description":"A large mangrove forest and wildlife sanctuary, home to numerous species of birds and animals.","estimatedCost":50 },
+        { "name":"Hope Island","type":"Nature","description":"A tadpole-shaped island that acts as a natural breakwater, offering serene beaches.","estimatedCost":300 },
+        { "name":"Uppada Beach","type":"Scenic","description":"A beautiful and wide beach known for its clear water and stunning sunsets.","estimatedCost":0 },
+        { "name":"Kakinada-Uppada Beach Park","type":"Leisure","description":"A recreational park along the beach with musical fountains and green spaces.","estimatedCost":20 },
+        { "name":"Bhavanarayana Swamy Temple","type":"Religious","description":"An ancient and prominent temple dedicated to Lord Vishnu.","estimatedCost":0 },
+        { "name":"Adurru","type":"Historic","description":"An ancient Buddhist archaeological site with ruins of stupas and viharas.","estimatedCost":10 }
+    ]},
+    "Kalyan": { "places": [
+        { "name":"Durgadi Fort","type":"Historic","description":"An ancient fort on a hill, offering views of the creek and a temple inside.","estimatedCost":0 },
+        { "name":"Kala Talao","type":"Leisure","description":"A historic lake and a popular recreational spot for locals.","estimatedCost":0 },
+        { "name":"Malanggad","type":"Trekking","description":"A popular trekking destination, a hill fort also known as Haji Malang.","estimatedCost":50 },
+        { "name":"Birla Mandir","type":"Religious","description":"A beautiful marble temple dedicated to Lord Vithoba, located in nearby Shahad.","estimatedCost":0 },
+        { "name":"Metro Junction Mall","type":"Shopping","description":"A large shopping mall with retail stores, a food court, and a cinema.","estimatedCost":400 },
+        { "name":"Ambreshwar Shiva Temple","type":"Historic","description":"An intricately carved 11th-century Hindu temple in nearby Ambarnath.","estimatedCost":0 }
+    ]},
+    "Kamarhati": { "places": [
+        { "name":"Dakshineswar Kali Temple","type":"Religious","description":"A famous and revered temple on the eastern bank of the Hooghly River.","estimatedCost":0 },
+        { "name":"Belur Math","type":"Religious","description":"Headquarters of the Ramakrishna Math and Mission, known for its unique architecture.","estimatedCost":0 },
+        { "name":"Adyapith Temple","type":"Religious","description":"A unique temple complex with three altars dedicated to different deities.","estimatedCost":0 },
+        { "name":"Pareshnath Jain Temple","type":"Architecture","description":"An ornate Jain temple in Kolkata with beautiful mirror-inlaid pillars and stained glass windows.","estimatedCost":0 },
+        { "name":"Princep Ghat","type":"Scenic","description":"A beautiful ghat on the Hooghly river with a stunning white monument, popular for boat rides.","estimatedCost":100 },
+        { "name":"Eco Park, New Town","type":"Leisure","description":"A huge urban park with themed gardens, a lake, and replicas of the Seven Wonders.","estimatedCost":30 }
+    ]},
+    "Kanchipuram": { "places": [
+        { "name":"Kailasanathar Temple","type":"Historic","description":"The oldest temple in the city, known for its magnificent Pallava architecture.","estimatedCost":0 },
+        { "name":"Ekambareswarar Temple","type":"Religious","description":"The largest temple in Kanchipuram, one of the Pancha Bootha Sthalams.","estimatedCost":0 },
+        { "name":"Varadharaja Perumal Temple","type":"Religious","description":"A massive temple complex dedicated to Lord Vishnu, one of the 108 Divya Desams.","estimatedCost":0 },
+        { "name":"Kamakshi Amman Temple","type":"Religious","description":"A famous temple dedicated to the goddess Kamakshi, a major pilgrimage site.","estimatedCost":0 },
+        { "name":"Vedanthangal Bird Sanctuary","type":"Nature","description":"One of the oldest bird sanctuaries in the country, attracting thousands of migratory birds.","estimatedCost":25 },
+        { "name":"Kanchi Kudil","type":"Culture","description":"A 90-year-old ancestral home converted into a museum to showcase traditional living.","estimatedCost":10 }
+    ]},
+    "Kannur": { "places": [
+        { "name":"St. Angelo Fort","type":"Historic","description":"A massive triangular fort built by the Portuguese, offering stunning sea views.","estimatedCost":20 },
+        { "name":"Muzhappilangad Drive-in Beach","type":"Leisure","description":"Asia's longest drive-in beach, where you can drive your car along the shore for 4 km.","estimatedCost":30 },
+        { "name":"Payyambalam Beach","type":"Scenic","description":"A beautiful and serene beach with well-maintained gardens and sculptures.","estimatedCost":0 },
+        { "name":"Theyyam Performance","type":"Culture","description":"Witness the vibrant and ancient ritual dance form of Northern Kerala (seasonal).","estimatedCost":100 },
+        { "name":"Parassinikadavu Snake Park","type":"Nature","description":"A park dedicated to the preservation and conservation of snakes.","estimatedCost":30 },
+        { "name":"Arakkal Museum","type":"Museum","description":"A museum housed in the palace of the only Muslim royal family in Kerala.","estimatedCost":20 }
+    ]},
+    "Kanpur": { "places": [
+        { "name":"ISKCON Temple","type":"Religious","description":"A beautiful and large temple complex dedicated to Lord Krishna, with serene surroundings.","estimatedCost":0 },
+        { "name":"Allen Forest Zoo","type":"Nature","description":"A large zoological park set in a natural forest, one of the oldest in India.","estimatedCost":40 },
+        { "name":"Bithoor","type":"Historic","description":"A historic town on the banks of the Ganges, with several temples and ghats.","estimatedCost":50 },
+        { "name":"JK Temple","type":"Architecture","description":"A beautiful white marble temple dedicated to Radha and Krishna, known for its unique architecture.","estimatedCost":0 },
+        { "name":"Moti Jheel","type":"Leisure","description":"A lake and reservoir with surrounding gardens and recreational spaces.","estimatedCost":10 },
+        { "name":"Nana Rao Park","type":"Historic","description":"A large public park that was the site of the Bibighar massacre during the 1857 rebellion.","estimatedCost":10 }
+    ]},
+    "Kavaratti": { "places": [
+        { "name":"Glass Bottom Boat Ride","type":"Adventure","description":"Explore the rich marine life and vibrant coral reefs without getting wet.","estimatedCost":600 },
+        { "name":"Scuba Diving","type":"Adventure","description":"Discover the stunning underwater world of the Lakshadweep archipelago.","estimatedCost":3500 },
+        { "name":"Ujra Mosque","type":"Religious","description":"A beautiful and historic mosque known for its intricate wood carvings.","estimatedCost":0 },
+        { "name":"Kavaratti Aquarium","type":"Nature","description":"A marine aquarium showcasing a variety of colorful and exotic fish and corals.","estimatedCost":30 },
+        { "name":"Kayaking and Canoeing","type":"Adventure","description":"Enjoy water sports in the calm and clear waters of the lagoon.","estimatedCost":500 },
+        { "name":"Lighthouse","type":"Scenic","description":"Visit the lighthouse for panoramic views of the island and the surrounding ocean.","estimatedCost":20 }
+    ]},
+    "Kochi": { "places": [
+        { "name":"Fort Kochi","type":"Historic","description":"A charming area showcasing a blend of Portuguese, Dutch, and British colonial architecture.","estimatedCost":0 },
+        { "name":"Chinese Fishing Nets","type":"Scenic","description":"Iconic shore-operated lift nets, a picturesque sight especially during sunset.","estimatedCost":0 },
+        { "name":"Mattancherry Palace","type":"Historic","description":"Also known as the Dutch Palace, it features beautiful Kerala murals.","estimatedCost":5 },
+        { "name":"Jew Town & Paradesi Synagogue","type":"Historic","description":"The heart of the old Jewish community, with antique shops and a historic synagogue.","estimatedCost":5 },
+        { "name":"Kerala Kathakali Centre","type":"Culture","description":"Witness a captivating performance of the traditional Kathakali dance form.","estimatedCost":350 },
+        { "name":"Marine Drive","type":"Leisure","description":"A popular promenade facing the backwaters, perfect for an evening stroll.","estimatedCost":0 }
+    ]},
+    "Kohima": { "places": [
+        { "name":"Kohima War Cemetery","type":"Historic","description":"A beautifully maintained memorial dedicated to the soldiers who died during World War II.","estimatedCost":0 },
+        { "name":"Dzukou Valley","type":"Trekking","description":"A stunning valley known for its rolling hills and seasonal flowers, ideal for trekking.","estimatedCost":1000 },
+        { "name":"Kisama Heritage Village","type":"Culture","description":"The venue of the annual Hornbill Festival, showcasing the culture of Naga tribes.","estimatedCost":20 },
+        { "name":"Kohima Cathedral Church","type":"Architecture","description":"A prominent landmark, this large Catholic cathedral is known for its unique architecture.","estimatedCost":0 },
+        { "name":"Nagaland State Museum","type":"Museum","description":"Showcases the rich history, traditions, and artifacts of the various Naga tribes.","estimatedCost":10 },
+        { "name":"Japfu Peak","type":"Trekking","description":"The second-highest peak in Nagaland, offering challenging treks and stunning views.","estimatedCost":200 }
+    ]},
+    "Kolhapur": { "places": [
+        { "name":"Mahalakshmi Temple","type":"Religious","description":"A highly revered Hindu temple, one of the Shakti Pithas, dedicated to Goddess Mahalakshmi.","estimatedCost":0 },
+        { "name":"New Palace (Chhatrapati Shahu Museum)","type":"Museum","description":"A beautiful palace with a museum displaying memorabilia of the Kolhapur rulers.","estimatedCost":40 },
+        { "name":"Panhala Fort","type":"Historic","description":"A large and historic hill fort offering panoramic views and a rich history.","estimatedCost":20 },
+        { "name":"Rankala Lake","type":"Leisure","description":"A scenic lake with a walkway and gardens, a popular evening spot for locals.","estimatedCost":0 },
+        { "name":"Jyotiba Temple","type":"Religious","description":"An important pilgrimage site on a hill, dedicated to Jyotiba (an incarnation of three deities).","estimatedCost":10 },
+        { "name":"Kaneri Math","type":"Culture","description":"A unique museum (Siddhagiri Gramjivan Museum) showcasing rural village life through wax statues.","estimatedCost":120 }
+    ]},
+    "Kolkata": { "places": [
+        { "name":"Victoria Memorial","type":"Historic","description":"A magnificent white marble monument and museum dedicated to Queen Victoria.","estimatedCost":30 },
+        { "name":"Howrah Bridge","type":"Architecture","description":"An iconic cantilever bridge and a symbol of Kolkata, bustling with activity.","estimatedCost":0 },
+        { "name":"Dakshineswar Kali Temple","type":"Religious","description":"A famous Hindu temple on the banks of the Hooghly river, associated with Ramakrishna Paramahamsa.","estimatedCost":0 },
+        { "name":"Indian Museum","type":"Museum","description":"The oldest and largest museum in India, with a vast collection of artifacts.","estimatedCost":20 },
+        { "name":"Park Street","type":"Food","description":"A famous thoroughfare known for its nightlife, restaurants, and historic buildings.","estimatedCost":800 },
+        { "name":"Jorasanko Thakur Bari","type":"Historic","description":"The ancestral home of the Tagore family, including Rabindranath Tagore, now a museum.","estimatedCost":20 }
+    ]},
+    "Kollam": { "places": [
+        { "name":"Ashtamudi Lake","type":"Scenic","description":"A large and picturesque backwater lake, gateway to the Kerala backwaters.","estimatedCost":500 },
+        { "name":"Thangassery Lighthouse","type":"Scenic","description":"A historic lighthouse offering breathtaking panoramic views of the Arabian Sea.","estimatedCost":20 },
+        { "name":"Palaruvi Waterfalls","type":"Nature","description":"A beautiful cascading waterfall, its name meaning 'Stream of Milk'.","estimatedCost":25 },
+        { "name":"Jatayu Earth's Center","type":"Modern","description":"Features the world's largest bird sculpture, an adventure park, and stunning views.","estimatedCost":400 },
+        { "name":"Kollam Beach","type":"Leisure","description":"A serene beach, also known as Mahatma Gandhi Beach, with a park.","estimatedCost":0 },
+        { "name":"Munroe Island","type":"Culture","description":"A hidden gem in the backwaters, offering canoe tours through narrow canals.","estimatedCost":800 }
+    ]},
+    "Kota": { "places": [
+        { "name":"Seven Wonders Park","type":"Leisure","description":"A park featuring miniature replicas of the Seven Wonders of the World on the bank of Kishore Sagar Lake.","estimatedCost":40 },
+        { "name":"Garadia Mahadev Temple","type":"Scenic","description":"A temple offering a spectacular, breathtaking view of the Chambal River gorge.","estimatedCost":100 },
+        { "name":"Kota Barrage","type":"Engineering","description":"A dam on the Chambal River, a popular spot for evening outings.","estimatedCost":0 },
+        { "name":"City Palace (Garh Palace)","type":"Historic","description":"A large palace complex showcasing Rajput architecture, with a museum.","estimatedCost":60 },
+        { "name":"Chambal Garden","type":"Leisure","description":"A beautiful garden on the riverbank with a pond and a toy train.","estimatedCost":10 },
+        { "name":"Kishore Sagar and Jagmandir Palace","type":"Scenic","description":"A picturesque artificial lake with a beautiful red stone palace at its center.","estimatedCost":0 }
+    ]},
+    "Krishnanagar": { "places": [
+        { "name":"Krishnanagar Rajbari","type":"Historic","description":"The royal palace of the city, known for its grand architecture and historic significance.","estimatedCost":10 },
+        { "name":"ISKCON Temple, Mayapur","type":"Religious","description":"The world headquarters of ISKCON, a massive and beautiful temple complex.","estimatedCost":0 },
+        { "name":"Roman Catholic Church","type":"Religious","description":"A historic church known for its beautiful architecture and wooden carvings.","estimatedCost":0 },
+        { "name":"Ghurni (Clay Doll Makers' Quarter)","type":"Art","description":"A famous neighborhood where artisans create stunningly realistic clay dolls and sculptures.","estimatedCost":50 },
+        { "name":"Bethuadahari Wildlife Sanctuary","type":"Nature","description":"A small sanctuary, home to spotted deer, pythons, and various bird species.","estimatedCost":60 },
+        { "name":"Jalangi River","type":"Scenic","description":"Enjoy a peaceful boat ride or a stroll along the banks of the river.","estimatedCost":100 }
+    ]},
+    "Kurnool": { "places": [
+        { "name":"Belum Caves","type":"Nature","description":"The second largest cave system in the Indian subcontinent, known for its stalactite formations.","estimatedCost":65 },
+        { "name":"Konda Reddy Fort","type":"Historic","description":"A historic fort in the heart of the city with a large bastion offering city views.","estimatedCost":10 },
+        { "name":"Yaganti Temple","type":"Religious","description":"A famous temple of Lord Shiva, known for its growing Nandi idol.","estimatedCost":0 },
+        { "name":"Oravakallu Rock Garden","type":"Nature","description":"A unique garden with stunning natural rock formations, including silica and quartz rocks.","estimatedCost":20 },
+        { "name":"Rollapadu Bird Sanctuary","type":"Nature","description":"A sanctuary famous for being a habitat of the Great Indian Bustard.","estimatedCost":50 },
+        { "name":"Ahobilam Temple","type":"Religious","description":"A major pilgrimage center dedicated to Lord Narasimha, with nine temples in the Nallamala forests.","estimatedCost":100 }
+    ]},
+    "Lucknow": { "places": [
+        { "name":"Bara Imambara","type":"Historic","description":"A grand complex known for its large vaulted central hall and the Bhulbhulaiya (labyrinth).","estimatedCost":50 },
+        { "name":"Chota Imambara","type":"Architecture","description":"Known as the 'Palace of Lights' for its chandeliers and decorations during festivals.","estimatedCost":25 },
+        { "name":"Rumi Darwaza","type":"Architecture","description":"An imposing gateway built in the Awadhi architectural style, a symbol of Lucknow.","estimatedCost":0 },
+        { "name":"Ambedkar Memorial Park","type":"Modern","description":"A vast public park and memorial with grand statues and structures made of red sandstone.","estimatedCost":20 },
+        { "name":"Hazratganj Market","type":"Shopping","description":"A major upscale shopping area with Victorian-style buildings, shops, and eateries.","estimatedCost":400 },
+        { "name":"Tunday Kababi","type":"Food","description":"A legendary eatery famous for its melt-in-the-mouth Galouti kebabs.","estimatedCost":300 }
+    ]},
+    "Ludhiana": { "places": [
+        { "name":"Punjab Agricultural University Museum","type":"Museum","description":"Showcases the rural life and agricultural history of Punjab.","estimatedCost":10 },
+        { "name":"Hardy's World Amusement Park","type":"Leisure","description":"A popular theme park with water slides, rides, and entertainment options.","estimatedCost":800 },
+        { "name":"Nehru Rose Garden","type":"Nature","description":"A large and beautiful rose garden with musical fountains.","estimatedCost":0 },
+        { "name":"Maharaja Ranjit Singh War Museum","type":"Museum","description":"A museum dedicated to the Indian military, with galleries on various wars.","estimatedCost":40 },
+        { "name":"Gurdwara Dukh Niwaran Sahib","type":"Religious","description":"A revered Sikh shrine located in the village of Field Ganj.","estimatedCost":0 },
+        { "name":"Pavilion Mall","type":"Shopping","description":"A major shopping and entertainment hub in the city.","estimatedCost":500 }
+    ]},
+    "Madurai": { "places": [
+        { "name":"Meenakshi Amman Temple","type":"Religious","description":"A spectacular temple complex dedicated to Goddess Meenakshi, known for its towering gopurams.","estimatedCost":0 },
+        { "name":"Thirumalai Nayakkar Palace","type":"Historic","description":"A 17th-century palace with grand pillars and a stunning blend of Dravidian and Islamic architecture.","estimatedCost":50 },
+        { "name":"Gandhi Memorial Museum","type":"Museum","description":"Housed in a historic palace, it showcases the life of Mahatma Gandhi and the freedom struggle.","estimatedCost":0 },
+        { "name":"Alagar Kovil","type":"Religious","description":"A beautiful temple dedicated to Lord Vishnu, located at the foothills of Alagar hills.","estimatedCost":10 },
+        { "name":"Samanar Hills","type":"Historic","description":"A hill complex with ancient Jain caves, carvings, and inscriptions.","estimatedCost":0 },
+        { "name":"Puthu Mandapam","type":"Shopping","description":"A historic pillared hall opposite the Meenakshi Temple, now a bustling market for tailors and textiles.","estimatedCost":100 }
+    ]},
+    "Mangalore": { "places": [
+        { "name":"Panambur Beach","type":"Leisure","description":"A clean and popular beach known for its carnival-like atmosphere and water sports.","estimatedCost":50 },
+        { "name":"Kudroli Gokarnath Temple","type":"Religious","description":"A grand temple dedicated to Lord Shiva, known for its stunning architecture and grand Dasara festival.","estimatedCost":0 },
+        { "name":"St. Aloysius Chapel","type":"Art","description":"A chapel famous for its magnificent interior paintings that cover nearly every inch of the walls and ceiling.","estimatedCost":0 },
+        { "name":"Kadri Manjunath Temple","type":"Historic","description":"An ancient temple with Buddhist influences, dedicated to Lord Manjunatha.","estimatedCost":0 },
+        { "name":"Tannirbhavi Beach","type":"Scenic","description":"A serene and less crowded beach, accessible by ferry, perfect for watching sunsets.","estimatedCost":20 },
+        { "name":"Pilikula Nisargadhama","type":"Leisure","description":"An integrated park with a zoo, botanical garden, science center, and a lake for boating.","estimatedCost":100 }
+    ]},
+    "Mathura": { "places": [
+        { "name":"Shri Krishna Janmabhoomi Temple","type":"Religious","description":"The temple complex believed to be the exact birthplace of Lord Krishna.","estimatedCost":0 },
+        { "name":"Dwarkadheesh Temple","type":"Religious","description":"A major and ornate temple in Mathura, known for its beautiful architecture and vibrant festivities.","estimatedCost":0 },
+        { "name":"Vishram Ghat","type":"Religious","description":"The main ghat on the Yamuna river where Lord Krishna is said to have rested.","estimatedCost":0 },
+        { "name":"Kusum Sarovar","type":"Scenic","description":"A beautiful reservoir with historical sandstone monuments and cenotaphs.","estimatedCost":0 },
+        { "name":"Govardhan Hill","type":"Religious","description":"A sacred hill that devotees circumambulate, associated with a famous Krishna legend.","estimatedCost":20 },
+        { "name":"Government Museum, Mathura","type":"Museum","description":"Houses a superb collection of ancient sculptures from the Mathura School of Art.","estimatedCost":5 }
+    ]},
+    "Meerut": { "places": [
+        { "name":"Augharnath Mandir","type":"Historic","description":"A historic temple also known as Kali Paltan Mandir, significant to the 1857 rebellion.","estimatedCost":0 },
+        { "name":"St. John's Church","type":"Historic","description":"One of the oldest churches in North India, with beautiful colonial architecture.","estimatedCost":0 },
+        { "name":"Gandhi Bagh","type":"Leisure","description":"A large and popular park, also known as Company Garden, for recreation.","estimatedCost":10 },
+        { "name":"Shahpeer's Mausoleum","type":"Historic","description":"A beautiful red sandstone mausoleum from the Mughal era.","estimatedCost":0 },
+        { "name":"Hastinapur (nearby)","type":"Historic","description":"An ancient town believed to be the capital of the Pandavas in the Mahabharata.","estimatedCost":50 },
+        { "name":"Suraj Kund","type":"Leisure","description":"A historic pond surrounded by several temples, a popular local spot.","estimatedCost":0 }
+    ]},
+    "Moradabad": { "places": [
+        { "name":"Prem Wonderland and Prem Water Kingdom","type":"Leisure","description":"A popular amusement and water park for family entertainment.","estimatedCost":500 },
+        { "name":"Sai Temple","type":"Religious","description":"A well-known and peaceful temple dedicated to Sai Baba.","estimatedCost":0 },
+        { "name":"Jama Masjid","type":"Historic","description":"A historic Mughal-era mosque built in the 17th century.","estimatedCost":0 },
+        { "name":"Rampur Raza Library (nearby)","type":"Museum","description":"A treasure trove of Indo-Islamic learning and art, with rare manuscripts and paintings.","estimatedCost":20 },
+        { "name":"Brass Handicrafts Market","type":"Shopping","description":"Explore the markets for which Moradabad is famous, known as the 'Brass City'.","estimatedCost":200 },
+        { "name":"Nawab Mujahid-ud-Daulah's Tomb","type":"Historic","description":"A historical tomb showcasing fine architectural details.","estimatedCost":0 }
+    ]},
+    "Mysore": { "places": [
+        { "name":"Mysore Palace","type":"Historic","description":"A magnificent royal palace, a stunning example of Indo-Saracenic architecture, brilliantly illuminated at night.","estimatedCost":100 },
+        { "name":"Brindavan Gardens","type":"Leisure","description":"Famous for their terraced gardens and spectacular musical fountain show in the evening.","estimatedCost":50 },
+        { "name":"Chamundi Hill","type":"Religious","description":"A hill with a famous temple dedicated to the goddess Chamundeshwari, offering panoramic city views.","estimatedCost":0 },
+        { "name":"St. Philomena's Cathedral","type":"Religious","description":"A majestic Neo-Gothic style church, one of the tallest in Asia.","estimatedCost":0 },
+        { "name":"Jaganmohan Palace Art Gallery","type":"Art","description":"An art gallery housing a vast collection of traditional Mysore paintings.","estimatedCost":75 },
+        { "name":"Mysore Zoo","type":"Nature","description":"One of the oldest and best-maintained zoos in India, with a wide variety of animals.","estimatedCost":100 }
+    ]},
+    "Nagpur": { "places": [
+        { "name":"Deekshabhoomi","type":"Historic","description":"A sacred monument of Navayana Buddhism where Dr. B. R. Ambedkar converted to Buddhism.","estimatedCost":0 },
+        { "name":"Futala Lake","type":"Leisure","description":"A popular evening spot known for its colored fountains and beautifully lit promenades.","estimatedCost":0 },
+        { "name":"Pench Tiger Reserve (nearby)","type":"Nature","description":"A premier tiger reserve, believed to be the setting for Kipling's 'The Jungle Book'.","estimatedCost":1500 },
+        { "name":"Shree Ganesh Mandir Tekdi","type":"Religious","description":"An ancient and revered temple dedicated to Lord Ganesh, located on a hill.","estimatedCost":0 },
+        { "name":"Raman Science Centre & Planetarium","type":"Science","description":"An interactive science center with galleries and a planetarium.","estimatedCost":30 },
+        { "name":"Ambazari Lake & Garden","type":"Leisure","description":"The largest lake in Nagpur, surrounded by a beautiful garden, perfect for recreation.","estimatedCost":10 }
+    ]},
+    "Nainital": { "places": [
+        { "name":"Naini Lake","type":"Scenic","description":"A beautiful crescent-shaped lake, the heart of the town, offering boating and yachting.","estimatedCost":210 },
+        { "name":"Snow View Point","type":"Scenic","description":"Offers breathtaking panoramic views of the Himalayan peaks, accessible by ropeway.","estimatedCost":150 },
+        { "name":"The Mall Road","type":"Shopping","description":"A bustling promenade parallel to the lake, lined with shops, hotels, and restaurants.","estimatedCost":200 },
+        { "name":"Naina Devi Temple","type":"Religious","description":"A revered Shakti Peeth located on the northern shore of Naini Lake.","estimatedCost":0 },
+        { "name":"Tiffin Top (Dorothy's Seat)","type":"Trekking","description":"A scenic viewpoint on a hilltop, offering a stunning 360-degree view of the Himalayas.","estimatedCost":0 },
+        { "name":"Eco Cave Gardens","type":"Leisure","description":"A network of interconnected natural caves, shaped like various animals.","estimatedCost":60 }
+    ]},
+    "Nashik": { "places": [
+        { "name":"Sula Vineyards","type":"Leisure","description":"India's most famous winery, offering tours, wine tasting, and a beautiful restaurant.","estimatedCost":400 },
+        { "name":"Trimbakeshwar Shiva Temple","type":"Religious","description":"An ancient temple, one of the twelve sacred Jyotirlingas, located at the source of the Godavari river.","estimatedCost":0 },
+        { "name":"Panchavati","type":"Religious","description":"A sacred area on the Godavari river with several temples, mentioned in the Ramayana.","estimatedCost":0 },
+        { "name":"Pandavleni Caves","type":"Historic","description":"A group of 24 ancient rock-cut Buddhist caves dating from the 1st century BCE.","estimatedCost":25 },
+        { "name":"Kalaram Temple","type":"Religious","description":"A beautiful temple dedicated to Lord Rama, with a striking black stone idol.","estimatedCost":0 },
+        { "name":"Saptashrungi","type":"Religious","description":"A hilltop temple dedicated to the goddess Saptashrungi, a revered pilgrimage site.","estimatedCost":50 }
+    ]},
+    "Navsari": { "places": [
+        { "name":"Dandi Beach","type":"Historic","description":"The historic beach where Mahatma Gandhi concluded the Dandi Salt March in 1930.","estimatedCost":0 },
+        { "name":"National Salt Satyagraha Memorial","type":"Museum","description":"A modern memorial complex at Dandi commemorating the Salt March.","estimatedCost":10 },
+        { "name":"Unai Mata Temple","type":"Religious","description":"A temple with a hot water spring (kund) believed to have medicinal properties.","estimatedCost":0 },
+        { "name":"Jamshed Baug","type":"Leisure","description":"A local garden and recreational area.","estimatedCost":10 },
+        { "name":"Meherjirana Library","type":"Historic","description":"One of the oldest libraries in Gujarat, with a rich collection of books.","estimatedCost":0 },
+        { "name":"Somnath Mahadev Temple","type":"Religious","description":"A revered temple dedicated to Lord Shiva in the town of Billimora nearby.","estimatedCost":0 }
+    ]},
+    "Noida": { "places": [
+        { "name":"DLF Mall of India","type":"Shopping","description":"One of the largest shopping malls in India with numerous retail brands, restaurants, and a cinema.","estimatedCost":500 },
+        { "name":"Worlds of Wonder","type":"Leisure","description":"A large amusement and water park with a wide variety of rides and attractions.","estimatedCost":1000 },
+        { "name":"Okhla Bird Sanctuary","type":"Nature","description":"A sanctuary on the Yamuna river, attracting over 300 species of birds.","estimatedCost":30 },
+        { "name":"Noida Golf Course","type":"Sports","description":"A lush green 18-hole golf course and a popular spot for recreation.","estimatedCost":200 },
+        { "name":"Stupa 18 Gallery","type":"Art","description":"An art gallery showcasing works by contemporary Indian artists.","estimatedCost":0 },
+        { "name":"Rashtriya Dalit Prerna Sthal and Green Garden","type":"Modern","description":"A large memorial park with statues and fountains, dedicated to Dalit leaders.","estimatedCost":15 }
+    ]},
+    "Ongole": { "places": [
+        { "name":"Kothapatnam Beach","type":"Scenic","description":"A serene and beautiful beach, ideal for relaxation and watching the sunrise.","estimatedCost":0 },
+        { "name":"Vodarevu Beach","type":"Leisure","description":"A popular beach near Chirala, offering boating and a pleasant coastline.","estimatedCost":20 },
+        { "name":"Bhairavakona","type":"Religious","description":"An ancient site with rock-cut cave temples dedicated to Lord Shiva in a scenic waterfall valley.","estimatedCost":30 },
+        { "name":"Chennakesava Swamy Temple","type":"Religious","description":"A historic temple dedicated to Lord Vishnu, known for its architecture.","estimatedCost":0 },
+        { "name":"Chandavaram Buddhist Site","type":"Historic","description":"An ancient archaeological site with a double-terraced stupa on a hilltop.","estimatedCost":10 },
+        { "name":"Tangutur","type":"Culture","description":"Known for being the birthplace of the freedom fighter Tanguturi Prakasam Pantulu.","estimatedCost":0 }
+    ]},
+    "Ooty": { "places": [
+        { "name":"Government Botanical Garden","type":"Nature","description":"A sprawling garden with diverse flora, a fossilized tree trunk, and a flower show.","estimatedCost":30 },
+        { "name":"Ooty Lake","type":"Leisure","description":"A popular artificial lake offering boating and surrounded by eucalyptus trees.","estimatedCost":100 },
+        { "name":"Doddabetta Peak","type":"Scenic","description":"The highest point in the Nilgiri mountains, offering stunning panoramic views.","estimatedCost":10 },
+        { "name":"Nilgiri Mountain Railway","type":"Experience","description":"A UNESCO World Heritage site, enjoy a ride on this charming toy train.","estimatedCost":205 },
+        { "name":"Tea Museum and Factory","type":"Experience","description":"Learn about the process of tea making and sample different varieties of tea.","estimatedCost":10 },
+        { "name":"Pykara Lake and Waterfalls","type":"Nature","description":"A serene lake and a powerful waterfall, a beautiful spot for picnics and boating.","estimatedCost":60 }
+    ]},
+    "Palakkad": { "places": [
+        { "name":"Palakkad Fort (Tipu's Fort)","type":"Historic","description":"A well-preserved 18th-century fort in the heart of the city.","estimatedCost":15 },
+        { "name":"Malampuzha Dam and Gardens","type":"Leisure","description":"A large dam and beautifully landscaped gardens with a ropeway and rock garden.","estimatedCost":50 },
+        { "name":"Silent Valley National Park","type":"Nature","description":"A pristine and untouched rainforest, part of the Nilgiri Biosphere Reserve.","estimatedCost":500 },
+        { "name":"Parambikulam Tiger Reserve","type":"Nature","description":"A major ecological reserve with rich biodiversity, offering trekking and safaris.","estimatedCost":300 },
+        { "name":"Nelliyampathy Hills","type":"Scenic","description":"A stunning hill station with tea estates, orange farms, and breathtaking viewpoints.","estimatedCost":100 },
+        { "name":"Kollengode Palace","type":"Historic","description":"A beautiful historic palace showcasing traditional Kerala architecture.","estimatedCost":10 }
+    ]},
+    "Panaji": { "places": [
+        { "name":"Our Lady of the Immaculate Conception Church","type":"Architecture","description":"An iconic, pristine white church located on a hilltop in the city center.","estimatedCost":0 },
+        { "name":"Fontainhas (Latin Quarter)","type":"Historic","description":"A charming old quarter with colorful Portuguese-style houses and narrow winding streets.","estimatedCost":0 },
+        { "name":"Miramar Beach","type":"Leisure","description":"A golden sand beach at the confluence of the Mandovi River and the Arabian Sea.","estimatedCost":0 },
+        { "name":"Goa State Museum","type":"Museum","description":"Showcases the history, culture, and art of Goa.","estimatedCost":10 },
+        { "name":"Deltin Royale Casino","type":"Leisure","description":"A floating casino on the Mandovi River, offering games, entertainment, and dining.","estimatedCost":2500 },
+        { "name":"Basilica of Bom Jesus (Old Goa)","type":"Religious","description":"A UNESCO World Heritage site holding the mortal remains of St. Francis Xavier.","estimatedCost":0 }
+    ]},
+    "Patna": { "places": [
+        { "name":"Golghar","type":"Historic","description":"A massive beehive-shaped granary built in the 18th century, offering city views.","estimatedCost":0 },
+        { "name":"Takht Sri Patna Sahib","type":"Religious","description":"A revered Gurdwara, one of the five Takhts, marking the birthplace of Guru Gobind Singh.","estimatedCost":0 },
+        { "name":"Bihar Museum","type":"Museum","description":"A modern museum with a vast collection showcasing the history and art of Bihar.","estimatedCost":100 },
+        { "name":"Patna Museum","type":"Museum","description":"An older museum with a rich collection of archaeological artifacts and sculptures.","estimatedCost":15 },
+        { "name":"Sanjay Gandhi Jaivik Udyan","type":"Nature","description":"A large biological park and zoo, popular with families.","estimatedCost":30 },
+        { "name":"Buddha Smriti Park","type":"Leisure","description":"A peaceful park with a stupa containing Buddha's relics from around the world.","estimatedCost":20 }
+    ]},
+    "Pondicherry": { "places": [
+        { "name":"Promenade Beach","type":"Scenic","description":"A beautiful seafront promenade, perfect for morning and evening strolls (vehicle-free in evenings).","estimatedCost":0 },
+        { "name":"Auroville","type":"Spiritual","description":"An experimental township dedicated to human unity, with the iconic Matrimandir at its center.","estimatedCost":0 },
+        { "name":"Sri Aurobindo Ashram","type":"Spiritual","description":"A spiritual community founded by Sri Aurobindo and The Mother.","estimatedCost":0 },
+        { "name":"French Quarter (White Town)","type":"Architecture","description":"A charming area with colonial French architecture, vibrant bougainvillea-lined streets, and cafes.","estimatedCost":0 },
+        { "name":"Paradise Beach","type":"Leisure","description":"A pristine beach with golden sand, accessible by a short boat ride through backwaters.","estimatedCost":200 },
+        { "name":"Basilica of the Sacred Heart of Jesus","type":"Religious","description":"A beautiful Gothic-style basilica known for its stained-glass panels.","estimatedCost":0 }
+    ]},
+    "Prayagraj": { "places": [
+        { "name":"Triveni Sangam","type":"Religious","description":"The sacred confluence of the Ganga, Yamuna, and mythical Saraswati rivers.","estimatedCost":200 },
+        { "name":"Allahabad Fort","type":"Historic","description":"A massive fort built by Emperor Akbar at the confluence of the rivers.","estimatedCost":0 },
+        { "name":"Anand Bhavan","type":"Historic","description":"The ancestral home of the Nehru family, now a museum showcasing the history of the freedom struggle.","estimatedCost":70 },
+        { "name":"Khusro Bagh","type":"Historic","description":"A large walled garden containing the tombs of members of the Mughal royal family.","estimatedCost":0 },
+        { "name":"All Saints Cathedral","type":"Architecture","description":"A stunning example of Gothic Revival architecture from the colonial era.","estimatedCost":0 },
+        { "name":"Alfred Park (Chandrashekhar Azad Park)","type":"Historic","description":"The largest park in the city, where the revolutionary Chandrashekhar Azad died.","estimatedCost":10 }
+    ]},
+    "Pune": { "places": [
+        { "name":"Shaniwar Wada","type":"Historic","description":"The historic seat of the Peshwas of the Maratha Empire, now in ruins.","estimatedCost":25 },
+        { "name":"Aga Khan Palace","type":"Historic","description":"A graceful palace where Mahatma Gandhi was imprisoned during the freedom struggle.","estimatedCost":15 },
+        { "name":"Sinhagad Fort","type":"Trekking","description":"A popular hill fortress offering stunning views and a challenging trek.","estimatedCost":20 },
+        { "name":"Dagdusheth Halwai Ganpati Temple","type":"Religious","description":"A famous temple dedicated to Lord Ganesha, with a lavishly decorated idol.","estimatedCost":0 },
+        { "name":"Raja Dinkar Kelkar Museum","type":"Museum","description":"A fascinating museum housing a vast one-man collection of Indian artifacts.","estimatedCost":50 },
+        { "name":"Pataleshwar Cave Temple","type":"Historic","description":"An 8th-century rock-cut cave temple dedicated to Lord Shiva, located in the city center.","estimatedCost":0 }
+    ]},
+    "Puri": { "places": [
+        { "name":"Jagannath Temple","type":"Religious","description":"A major Hindu pilgrimage site, one of the Char Dham, famous for its annual Rath Yatra.","estimatedCost":0 },
+        { "name":"Puri Beach","type":"Leisure","description":"A vibrant beach on the Bay of Bengal, known for its golden sands and local markets.","estimatedCost":0 },
+        { "name":"Konark Sun Temple (nearby)","type":"Historic","description":"A UNESCO World Heritage site, a 13th-century temple designed as a colossal chariot.","estimatedCost":40 },
+        { "name":"Chilika Lake","type":"Nature","description":"Asia's largest brackish water lagoon, a haven for migratory birds and dolphins.","estimatedCost":600 },
+        { "name":"Raghurajpur Artist Village","type":"Art","description":"A heritage crafts village famous for its Pattachitra paintings and other traditional arts.","estimatedCost":50 },
+        { "name":"Gundicha Temple","type":"Religious","description":"The destination of the Rath Yatra, considered the garden house of Lord Jagannath.","estimatedCost":0 }
+    ]},
+    "Raipur": { "places": [
+        { "name":"Jatmai Temple","type":"Religious","description":"A serene temple complex located amidst lush forests and near a waterfall.","estimatedCost":0 },
+        { "name":"Ghatarani Waterfalls","type":"Nature","description":"A beautiful waterfall surrounded by dense greenery, popular for picnics.","estimatedCost":0 },
+        { "name":"Nandan Van Zoo & Safari","type":"Nature","description":"A large zoological park and safari on the outskirts of the city.","estimatedCost":200 },
+        { "name":"Mahant Ghasidas Memorial Museum","type":"Museum","description":"An old museum showcasing a rich collection of tribal artifacts, sculptures, and inscriptions.","estimatedCost":5 },
+        { "name":"Vivekananda Sarovar (Budha Talab)","type":"Leisure","description":"A large lake in the city with a tall statue of Swami Vivekananda.","estimatedCost":0 },
+        { "name":"Purkhouti Muktangan","type":"Culture","description":"An open-air museum and cultural village depicting the life and traditions of Chhattisgarh.","estimatedCost":10 }
+    ]},
+    "Rajkot": { "places": [
+        { "name":"Kaba Gandhi No Delo","type":"Historic","description":"The house where Mahatma Gandhi spent his early years, now a museum.","estimatedCost":10 },
+        { "name":"Watson Museum","type":"Museum","description":"A museum with a collection of artifacts, textiles, and historical objects from the princely states of Saurashtra.","estimatedCost":5 },
+        { "name":"Rotary Dolls Museum","type":"Museum","description":"A unique museum showcasing over 1,600 dolls from around the world in traditional attire.","estimatedCost":25 },
+        { "name":"Aji Dam","type":"Leisure","description":"A dam and reservoir with surrounding gardens, a zoo, and an amusement park.","estimatedCost":20 },
+        { "name":"Race Course Ground","type":"Leisure","description":"A large open space in the city center with parks, sports facilities, and eateries.","estimatedCost":0 },
+        { "name":"Swaminarayan Temple","type":"Religious","description":"A beautiful and grand temple complex known for its intricate architecture.","estimatedCost":0 }
+    ]},
+    "Ranchi": { "places": [
+        { "name":"Dassam Falls","type":"Nature","description":"A stunning natural waterfall where the Kanchi River falls from a height of 144 feet.","estimatedCost":20 },
+        { "name":"Jonha Falls","type":"Nature","description":"A picturesque waterfall also known as Gautamdhara, surrounded by forests.","estimatedCost":20 },
+        { "name":"Jagannath Temple","type":"Religious","description":"A 17th-century temple built in the architectural style of the Puri Jagannath Temple.","estimatedCost":0 },
+        { "name":"Pahari Mandir","type":"Religious","description":"A hilltop temple dedicated to Lord Shiva, offering panoramic views of Ranchi city.","estimatedCost":0 },
+        { "name":"Rock Garden","type":"Leisure","description":"A unique garden with sculptures and waterfalls carved out of rocks from the Gonda Hill.","estimatedCost":20 },
+        { "name":"Patratu Valley","type":"Scenic","description":"A mesmerizing valley with winding roads and stunning views of the dam and surrounding hills.","estimatedCost":100 }
+    ]},
+    "Saharanpur": { "places": [
+        { "name":"Shakumbhari Devi Temple","type":"Religious","description":"An ancient and revered Shakti Peeth located in the Sivalik hills.","estimatedCost":50 },
+        { "name":"Company Garden","type":"Leisure","description":"A large and old botanical garden with a variety of plant species.","estimatedCost":10 },
+        { "name":"Nau Gaza Peer","type":"Religious","description":"A popular shrine believed to be the tomb of a giant saint.","estimatedCost":0 },
+        { "name":"Saharanpur Botanical Gardens","type":"Nature","description":"Known for its extensive collection of plants and its role in horticultural research.","estimatedCost":20 },
+        { "name":"Wood Carving Market","type":"Shopping","description":"Explore the local markets famous for intricate wooden handicrafts.","estimatedCost":200 },
+        { "name":"Shri Baba Lal Das","type":"Religious","description":"A historical religious site with a tranquil atmosphere.","estimatedCost":0 }
+    ]},
+    "Salem": { "places": [
+        { "name":"Yercaud Hills","type":"Scenic","description":"A beautiful and serene hill station known as the 'Jewel of the South'.","estimatedCost":200 },
+        { "name":"Kiliyur Falls","type":"Nature","description":"A stunning 300-foot waterfall in the Yercaud hills, best visited after the monsoon.","estimatedCost":0 },
+        { "name":"Mettur Dam","type":"Engineering","description":"One of the largest dams in India, a massive structure on the Kaveri river.","estimatedCost":10 },
+        { "name":"1008 Lingam Temple","type":"Religious","description":"A unique temple with 1008 Shiva lingams and a large main lingam.","estimatedCost":0 },
+        { "name":"Oothumalai Hill","type":"Religious","description":"A hilltop with a temple dedicated to Lord Murugan, offering panoramic views.","estimatedCost":0 },
+        { "name":"Kurumbapatti Zoological Park","type":"Nature","description":"A small zoo and park located in the foothills of the Shevaroy Hills.","estimatedCost":25 }
+    ]},
+    "Sangli": { "places": [
+        { "name":"Ganapati Temple","type":"Religious","description":"An ancient and revered temple dedicated to Lord Ganesha on the banks of the Krishna river.","estimatedCost":0 },
+        { "name":"Sagareshwar Wildlife Sanctuary","type":"Nature","description":"A man-made sanctuary with a variety of deer, birds, and several temples.","estimatedCost":30 },
+        { "name":"Chandoli National Park","type":"Nature","description":"A lush national park and tiger reserve, part of the Sahyadri Tiger Reserve.","estimatedCost":100 },
+        { "name":"Dandoba Hills Forest Reserve","type":"Trekking","description":"A forest reserve with a historic fort and a temple, popular for trekking.","estimatedCost":20 },
+        { "name":"Krishna Valley Wine Park","type":"Leisure","description":"Explore the local wineries and vineyards in the region.","estimatedCost":300 },
+        { "name":"Sangli Fort","type":"Historic","description":"A historic fort in the city center, which now houses government offices.","estimatedCost":0 }
+    ]},
+    "Siliguri": { "places": [
+        { "name":"Salugara Monastery","type":"Religious","description":"A serene Buddhist monastery known for its 100-foot stupa.","estimatedCost":0 },
+        { "name":"Bengal Safari Park","type":"Nature","description":"A wildlife park offering safaris to see animals like tigers, leopards, and bears.","estimatedCost":200 },
+        { "name":"Hong Kong Market","type":"Shopping","description":"A bustling market famous for imported goods, gadgets, and apparel.","estimatedCost":300 },
+        { "name":"Mahananda Wildlife Sanctuary","type":"Nature","description":"A wildlife sanctuary in the foothills of the Himalayas, home to elephants and Bengal tigers.","estimatedCost":120 },
+        { "name":"ISKCON Temple","type":"Religious","description":"A beautiful and peaceful temple dedicated to Lord Krishna.","estimatedCost":0 },
+        { "name":"Coronation Bridge","type":"Architecture","description":"A historic British-era bridge over the Teesta River with stunning architecture.","estimatedCost":0 }
+    ]},
+    "Solapur": { "places": [
+        { "name":"Siddheshwar Temple","type":"Religious","description":"A revered temple located in the middle of a lake, dedicated to Lord Siddheshwar.","estimatedCost":0 },
+        { "name":"Akkalkot Swami Samarth Maharaj Temple","type":"Religious","description":"A major pilgrimage center dedicated to the 19th-century saint Swami Samarth.","estimatedCost":20 },
+        { "name":"Pandharpur (nearby)","type":"Religious","description":"One of the most important pilgrimage sites in Maharashtra, with its famous Vithoba Temple.","estimatedCost":50 },
+        { "name":"Great Indian Bustard Sanctuary","type":"Nature","description":"A wildlife sanctuary dedicated to the conservation of the critically endangered Great Indian Bustard.","estimatedCost":30 },
+        { "name":"Bhuikot Fort","type":"Historic","description":"A historic land fort in the city, known for its animal park inside.","estimatedCost":10 },
+        { "name":"Tuljapur Bhavani Temple (nearby)","type":"Religious","description":"One of the 51 Shakti Pithas, a revered temple dedicated to Goddess Bhavani.","estimatedCost":50 }
+    ]},
+    "Srinagar": { "places": [
+        { "name":"Dal Lake","type":"Scenic","description":"The iconic lake of Kashmir, famous for its houseboats (shikaras) and floating markets.","estimatedCost":500 },
+        { "name":"Mughal Gardens","type":"Nature","description":"A collective of beautiful gardens like Shalimar Bagh, Nishat Bagh, and Chashme Shahi.","estimatedCost":50 },
+        { "name":"Shankaracharya Temple","type":"Religious","description":"An ancient temple dedicated to Lord Shiva, located on a hilltop with panoramic city views.","estimatedCost":0 },
+        { "name":"Hazratbal Shrine","type":"Religious","description":"A pristine white marble shrine on the banks of Dal Lake, containing a relic of the Prophet Muhammad.","estimatedCost":0 },
+        { "name":"Old City (Downtown)","type":"Historic","description":"Explore the historic heart of Srinagar with its traditional architecture, mosques, and markets.","estimatedCost":100 },
+        { "name":"Pari Mahal","type":"Historic","description":"A seven-terraced garden on a hilltop, once a Buddhist monastery, offering stunning views.","estimatedCost":25 }
+    ]},
+    "Surat": { "places": [
+        { "name":"Dumas Beach","type":"Scenic","description":"A black sand beach known for its serene atmosphere and local folklore.","estimatedCost":0 },
+        { "name":"Sardar Patel Museum","type":"Museum","description":"A museum with a rich collection of artifacts showcasing the history and culture of Surat.","estimatedCost":20 },
+        { "name":"Dutch Garden","type":"Historic","description":"A well-maintained European-style garden with ancient Dutch tombs.","estimatedCost":0 },
+        { "name":"Sarthana Nature Park","type":"Nature","description":"A zoological park and breeding center with a variety of animals and birds.","estimatedCost":30 },
+        { "name":"Gopi Talav","type":"Leisure","description":"A historic lake that has been redeveloped into a recreational spot with gardens and activities.","estimatedCost":20 },
+        { "name":"Iskcon Temple","type":"Religious","description":"A beautiful and large temple dedicated to Lord Krishna, a center for spiritual activities.","estimatedCost":0 }
+    ]},
+    "Thane": { "places": [
+        { "name":"Upvan Lake","type":"Scenic","description":"A picturesque lake surrounded by hills, a popular spot for recreation and cultural events.","estimatedCost":0 },
+        { "name":"Sanjay Gandhi National Park","type":"Nature","description":"A large protected forest area, offering nature trails, a lion safari, and the ancient Kanheri Caves.","estimatedCost":70 },
+        { "name":"Kelwa Beach","type":"Leisure","description":"A long and serene beach, a popular weekend getaway from the city.","estimatedCost":50 },
+        { "name":"Ghodbunder Fort","type":"Historic","description":"A historic fort with Portuguese and Maratha influences, offering views of the Ulhas River.","estimatedCost":0 },
+        { "name":"Masunda Talao (Talao Pali)","type":"Leisure","description":"A lake in the heart of Thane city, known for boating and evening strolls.","estimatedCost":30 },
+        { "name":"Viviana Mall","type":"Shopping","description":"One of the largest malls in the area, with a wide range of retail stores, eateries, and entertainment.","estimatedCost":400 }
+    ]},
+    "Thiruvananthapuram": { "places": [
+        { "name":"Padmanabhaswamy Temple","type":"Religious","description":"A magnificent and opulent temple dedicated to Lord Vishnu, known for its intricate architecture.","estimatedCost":0 },
+        { "name":"Napier Museum","type":"Museum","description":"An art and natural history museum with unique Indo-Saracenic architecture.","estimatedCost":20 },
+        { "name":"Kovalam Beach","type":"Leisure","description":"An internationally renowned beach with three beautiful crescent-shaped beaches.","estimatedCost":100 },
+        { "name":"Poovar Island","type":"Scenic","description":"A stunning estuary where a lake, river, and the sea meet, offering boat tours.","estimatedCost":1500 },
+        { "name":"Thiruvananthapuram Zoo","type":"Nature","description":"One of the oldest zoos in India, set within a well-planned botanical garden.","estimatedCost":30 },
+        { "name":"Veli Tourist Village","type":"Leisure","description":"A scenic spot where the Veli Lake meets the Arabian Sea, with boating and a floating bridge.","estimatedCost":50 }
+    ]},
+    "Thrissur": { "places": [
+        { "name":"Vadakkunnathan Temple","type":"Religious","description":"An ancient Shiva temple, a classic example of Kerala's architectural style and the venue for Thrissur Pooram.","estimatedCost":0 },
+        { "name":"Athirappilly Waterfalls","type":"Nature","description":"Often called the 'Niagara of India', a spectacular waterfall on the Chalakudy River.","estimatedCost":50 },
+        { "name":"Guruvayur Temple","type":"Religious","description":"One of the most important pilgrimage sites for Hindus in Kerala, dedicated to Lord Krishna.","estimatedCost":0 },
+        { "name":"Kerala Kalamandalam","type":"Art","description":"A major center for learning Indian performing arts, especially those developed in Kerala.","estimatedCost":100 },
+        { "name":"Snehatheeram Beach","type":"Leisure","description":"A well-maintained and beautiful beach, perfect for families and watching sunsets.","estimatedCost":0 },
+        { "name":"Shakthan Thampuran Palace","type":"Historic","description":"A restored palace built in the Kerala-Dutch style, now a museum.","estimatedCost":20 }
+    ]},
+    "Tiruchirappalli": { "places": [
+        { "name":"Sri Ranganathaswamy Temple","type":"Religious","description":"A massive temple complex on an island, one of the foremost Vishnu temples in the world.","estimatedCost":0 },
+        { "name":"Rockfort Temple","type":"Historic","description":"A historic fort and temple complex built on a massive ancient rock.","estimatedCost":10 },
+        { "name":"Kallanai Dam","type":"Historic","description":"An ancient dam built on the Kaveri River, one of the oldest water-regulation structures in the world.","estimatedCost":0 },
+        { "name":"Jambukeswarar Temple, Thiruvanaikaval","type":"Religious","description":"A famous Shiva temple representing the element of 'water' among the Pancha Bhoota Sthalams.","estimatedCost":0 },
+        { "name":"Our Lady of Lourdes Church","type":"Architecture","description":"A beautiful Gothic-style church, a replica of the Lourdes Basilica in France.","estimatedCost":0 },
+        { "name":"Mukkombu (Upper Anaicut)","type":"Leisure","description":"A popular picnic spot at a barrage on the Kaveri river, with parks and boating facilities.","estimatedCost":20 }
+    ]},
+    "Tirupati": { "places": [
+        { "name":"Sri Venkateswara Temple (Tirumala)","type":"Religious","description":"One of the most visited and wealthiest pilgrimage sites in the world, dedicated to Lord Venkateswara.","estimatedCost":0 },
+        { "name":"Sri Padmavathi Ammavari Temple","type":"Religious","description":"A temple in Tiruchanur dedicated to the consort of Lord Venkateswara.","estimatedCost":0 },
+        { "name":"Kapila Theertham","type":"Religious","description":"A sacred waterfall and a Shiva temple located at the foothills of Tirumala.","estimatedCost":0 },
+        { "name":"Silathoranam","type":"Nature","description":"A unique, natural rock arch, a rare geological formation.","estimatedCost":10 },
+        { "name":"Sri Govindarajaswamy Temple","type":"Religious","description":"A large and ancient temple complex in the heart of Tirupati town.","estimatedCost":0 },
+        { "name":"Talakona Waterfalls","type":"Nature","description":"The highest waterfall in Andhra Pradesh, located in a scenic forest area.","estimatedCost":50 }
+    ]},
+    "Udaipur": { "places": [
+        { "name":"City Palace","type":"Historic","description":"A magnificent palace complex on the banks of Lake Pichola, showcasing a blend of Rajasthani and Mughal architecture.","estimatedCost":300 },
+        { "name":"Lake Pichola","type":"Scenic","description":"A stunning artificial lake with two famous island palaces, Jag Mandir and Jag Niwas (Lake Palace).","estimatedCost":400 },
+        { "name":"Jag Mandir","type":"Historic","description":"An island palace on Lake Pichola, known for its beautiful gardens and architecture.","estimatedCost":325 },
+        { "name":"Saheliyon-ki-Bari","type":"Leisure","description":"A beautiful garden with fountains, kiosks, marble elephants, and a delightful lotus pool.","estimatedCost":50 },
+        { "name":"Monsoon Palace (Sajjan Garh)","type":"Scenic","description":"A hilltop palace offering breathtaking panoramic views of the city's lakes and surroundings, especially at sunset.","estimatedCost":110 },
+        { "name":"Bagore Ki Haveli","type":"Culture","description":"A historic haveli that has been converted into a museum and hosts evening cultural shows.","estimatedCost":100 }
+    ]},
+    "Vadodara": { "places": [
+        { "name":"Laxmi Vilas Palace","type":"Historic","description":"A magnificent palace, larger than Buckingham Palace, and the residence of the royal family.","estimatedCost":200 },
+        { "name":"Sayaji Baug (Kamati Baug)","type":"Leisure","description":"A large garden with a zoo, museums, a planetarium, and a toy train.","estimatedCost":10 },
+        { "name":"Maharaja Fateh Singh Museum","type":"Museum","description":"Housed within the Laxmi Vilas Palace, it has a rich collection of art and artifacts.","estimatedCost":60 },
+        { "name":"Champaner-Pavagadh Archaeological Park","type":"Historic","description":"A UNESCO World Heritage site with historic forts, palaces, mosques, and temples.","estimatedCost":40 },
+        { "name":"Sursagar Lake","type":"Scenic","description":"A lake in the heart of the city with a large statue of Lord Shiva.","estimatedCost":0 },
+        { "name":"EME Temple","type":"Architecture","description":"A unique geodesic-structured temple dedicated to Lord Shiva, run by the Indian Army.","estimatedCost":0 }
+    ]},
+    "Varanasi": { "places": [
+        { "name":"Kashi Vishwanath Temple","type":"Religious","description":"One of the most sacred Hindu temples dedicated to Lord Shiva, one of the twelve Jyotirlingas.","estimatedCost":0 },
+        { "name":"Ganges River Ghats","type":"Experience","description":"The riverfront steps leading to the banks of the River Ganges, the heart of Varanasi's spiritual life.","estimatedCost":0 },
+        { "name":"Dashashwamedh Ghat","type":"Religious","description":"The main and most spectacular ghat, famous for its grand evening Ganga Aarti ceremony.","estimatedCost":0 },
+        { "name":"Sarnath","type":"Historic","description":"The place where Lord Buddha delivered his first sermon, a major Buddhist pilgrimage site.","estimatedCost":100 },
+        { "name":"Manikarnika Ghat","type":"Experience","description":"The primary cremation ghat in Varanasi, a place to contemplate life and death.","estimatedCost":0 },
+        { "name":"Boat Ride on the Ganges","type":"Leisure","description":"Experience the spiritual essence of Varanasi with a boat ride at sunrise or sunset.","estimatedCost":300 }
+    ]},
+    "Vellore": { "places": [
+        { "name":"Vellore Fort","type":"Historic","description":"A large 16th-century fort known for its grand ramparts and wide moat.","estimatedCost":15 },
+        { "name":"Sripuram Golden Temple","type":"Religious","description":"A spiritual park with a temple covered in pure gold, dedicated to the goddess Mahalakshmi.","estimatedCost":0 },
+        { "name":"Jalakandeswarar Temple","type":"Religious","description":"A beautiful temple dedicated to Lord Shiva, located inside the Vellore Fort.","estimatedCost":0 },
+        { "name":"Yelagiri Hills","type":"Scenic","description":"A serene hill station nearby, offering boating, trekking, and nature walks.","estimatedCost":200 },
+        { "name":"Amirthi Zoological Park","type":"Nature","description":"A small zoo and park with a waterfall, popular for picnics.","estimatedCost":10 },
+        { "name":"Delhi Gate","type":"Historic","description":"The historic gate that marks the entrance to the old city of Arcot nearby.","estimatedCost":0 }
+    ]},
+    "Visakhapatnam": { "places": [
+        { "name":"Kailasagiri","type":"Leisure","description":"A hilltop park offering panoramic views of the city and the sea, accessible by ropeway.","estimatedCost":100 },
+        { "name":"Ramakrishna Beach","type":"Scenic","description":"A popular city beach, known for the INS Kursura Submarine Museum located on its shore.","estimatedCost":0 },
+        { "name":"INS Kursura Submarine Museum","type":"Museum","description":"A preserved Soviet-built submarine converted into a museum on the beach.","estimatedCost":40 },
+        { "name":"Araku Valley","type":"Scenic","description":"A beautiful hill station known for its coffee plantations, waterfalls, and tribal culture.","estimatedCost":500 },
+        { "name":"Borra Caves","type":"Nature","description":"Stunning million-year-old limestone caves with impressive stalactite and stalagmite formations.","estimatedCost":60 },
+        { "name":"Simhachalam Temple","type":"Religious","description":"A prominent hilltop temple dedicated to Lord Narasimha, known for its unique architecture.","estimatedCost":0 }
+    ]},
+    "Warangal": { "places": [
+        { "name":"Warangal Fort","type":"Historic","description":"A 13th-century fort known for its massive stone gateways (Kakatiya Kala Thoranam).","estimatedCost":25 },
+        { "name":"Thousand Pillar Temple","type":"Historic","description":"An ancient temple with intricate carvings, a fine example of Kakatiya architecture.","estimatedCost":0 },
+        { "name":"Ramappa Temple","type":"Historic","description":"A UNESCO World Heritage site, a Kakatiya-era temple known for its lightweight 'floating' bricks.","estimatedCost":15 },
+        { "name":"Bhadrakali Temple","type":"Religious","description":"An ancient temple dedicated to the goddess Bhadrakali, situated on a hilltop by a lake.","estimatedCost":0 },
+        { "name":"Pakhal Lake","type":"Nature","description":"A large man-made lake surrounded by a wildlife sanctuary.","estimatedCost":30 },
+        { "name":"Laknavaram Lake","type":"Scenic","description":"A stunning lake with multiple small islands, connected by a long suspension bridge.","estimatedCost":50 }
+    ]},
+    "Yamunanagar": { "places": [
+        { "name":"Kalesar National Park","type":"Nature","description":"A protected forest area known for its sal trees, wildlife, and birdwatching opportunities.","estimatedCost":100 },
+        { "name":"Tajewala Barrage","type":"Engineering","description":"A now-decommissioned but historic barrage on the Yamuna river.","estimatedCost":0 },
+        { "name":"Hathni Kund Barrage","type":"Scenic","description":"A modern barrage on the Yamuna river, a popular picnic spot with scenic views.","estimatedCost":0 },
+        { "name":"Ch Devi Lal Herbal Nature Park","type":"Nature","description":"A large park dedicated to medicinal and aromatic plants.","estimatedCost":10 },
+        { "name":"Panchmukhi Hanuman Mandir","type":"Religious","description":"A well-known temple dedicated to Lord Hanuman in Bilaspur town.","estimatedCost":0 },
+        { "name":"Adibadri","type":"Religious","description":"An ancient pilgrimage site believed to be the origin of the Saraswati river.","estimatedCost":20 }
+    ]},
+    "Zunheboto": { "places": [
+        { "name":"Sumi Baptist Church, Zunheboto","type":"Architecture","description":"One of the largest church buildings in Asia, a significant landmark.","estimatedCost":0 },
+        { "name":"Ghosu Bird Sanctuary","type":"Nature","description":"A community-conserved sanctuary that is home to a variety of bird species.","estimatedCost":50 },
+        { "name":"Satoi Range","type":"Trekking","description":"A mountain range known for its rhododendron forests and trekking opportunities.","estimatedCost":100 },
+        { "name":"Aizuto","type":"Historic","description":"A location of historical significance from the Battle of Kohima during WWII.","estimatedCost":0 },
+        { "name":"Apukito","type":"Culture","description":"A traditional Sumi Naga village where you can experience local culture and lifestyle.","estimatedCost":0 },
+        { "name":"Tizu River","type":"Scenic","description":"A major river in the region, offering scenic spots for picnics and angling.","estimatedCost":0 }
+    ]}
+};
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDnsWyYs5zhHrBKnM-cTKg9Na_oYKk69rk",
+    authDomain: "odyssey-5d332.firebaseapp.com",
+    projectId: "odyssey-5d332",
+    storageBucket: "odyssey-5d332.appspot.com",
+    messagingSenderId: "494643478681",
+    appId: "1:494643478681:web:2fd3cf2e12294b05d4b808"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // --- Element Selectors ---
+    const setupSection = document.getElementById('setup-section');
+    const plannerSection = document.getElementById('planner-section');
+    const extraSections = document.getElementById('extra-sections');
+    const startPlanningBtn = document.getElementById('start-planning-btn');
+    const authDialog = document.getElementById('auth-dialog');
+    const loginView = document.getElementById('login-view');
+    const signupView = document.getElementById('signup-view');
+    const newPlaceView = document.getElementById('new-place-view');
+    const newPlaceForm = document.getElementById('new-place-form');
+    const newPlaceInput = document.getElementById('new-place-name');
+    const showSignupLink = document.getElementById('show-signup');
+    const showLoginLink = document.getElementById('show-login');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const wizard = document.getElementById('wizard');
+    const destinationSelect = document.getElementById('destination-select');
+    const createTripBtn = document.getElementById('create-trip-btn');
+    const newTripBtn = document.getElementById('new-trip-btn');
+    const tripDestinationTitle = document.getElementById('trip-destination-title');
+    const totalBudgetEl = document.getElementById('total-budget');
+    const amountSpentEl = document.getElementById('amount-spent');
+    const budgetRemainingEl = document.getElementById('budget-remaining');
+    const suggestionsContainer = document.getElementById('suggestions-container');
+    const itineraryList = document.getElementById('itinerary-list');
+    const addItemBtn = document.getElementById('add-item-btn');
+    const addHotelBtn = document.getElementById('add-hotel-btn');
+    const placeInput = document.getElementById('place-name');
+    const dateInput = document.getElementById('item-date');
+    const costInput = document.getElementById('item-cost');
+    const notesInput = document.getElementById('item-notes');
+    const hotelNameInput = document.getElementById('hotel-name');
+    const hotelCheckinInput = document.getElementById('hotel-checkin');
+    const hotelNightsInput = document.getElementById('hotel-nights');
+    const hotelCostInput = document.getElementById('hotel-cost');
+    const hotelPeopleInput = document.getElementById('hotel-people');
+    const budgetProgressBar = document.getElementById('budget-progress-bar');
+    const budgetProgressText = document.getElementById('budget-progress-text');
+    const daysProgressBar = document.getElementById('days-progress-bar');
+    const daysProgressText = document.getElementById('days-progress-text');
+    const signOutBtnWizard = document.getElementById('sign-out-btn-wizard');
+    const signOutBtnPlanner = document.getElementById('sign-out-btn-planner');
+    const localGemForm = document.getElementById('local-gem-form'); // [NEW]
+    const gemCitySelect = document.getElementById('gem-city'); // [NEW]
+    const crowdingIndexBadge = document.getElementById('crowding-index-badge'); // [NEW]
+
+    // --- State Variables ---
+    let tripDetails = {};
+    let itineraryItems = [];
+
+    // --- Utility Functions ---
+    // [FIXED] Correctly escapes HTML to prevent XSS and rendering issues.
+    function escapeHtml(s) {
+      if (s === null || s === undefined) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+    function escapeAttr(s) { return escapeHtml(s).replace(/"/g, '&quot;'); }
+
+    // --- Authentication ---
+    startPlanningBtn.addEventListener('click', () => { authDialog.classList.remove('hidden'); });
+    authDialog.addEventListener('click', (e) => {
+      if (e.target === authDialog) { 
+        authDialog.classList.add('hidden'); 
+        signupView.classList.add('hidden');
+        newPlaceView.classList.add('hidden');
+        loginView.classList.remove('hidden');
+      }
+    });
+    showSignupLink.addEventListener('click', e => { e.preventDefault(); loginView.classList.add('hidden'); signupView.classList.remove('hidden'); });
+    showLoginLink.addEventListener('click', e => { e.preventDefault(); signupView.classList.add('hidden'); loginView.classList.remove('hidden'); });
+
+    $(destinationSelect).on('select2:select', function (e) {
+      if (e.params.data.id === 'add_new_place') {
+        // Show the dialog and switch to the 'new place' view
+        authDialog.classList.remove('hidden');
+        loginView.classList.add('hidden');
+        signupView.classList.add('hidden');
+        newPlaceView.classList.remove('hidden');
+        newPlaceInput.focus();
+        
+        // Clear the selection so the dropdown doesn't show "Add a new place"
+        $(destinationSelect).val(null).trigger('change');
+      }
+    });
+
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          authDialog.classList.add('hidden');
+          document.getElementById('homepage').classList.add('hidden');
+          wizard.classList.remove('hidden');
+          signOutBtnWizard.classList.remove('hidden');
+        })
+        .catch(err => { alert('Login failed: ' + err.message); });
+    });
+
+    signupForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          alert('Account created. Please log in.');
+          signupView.classList.add('hidden');
+          loginView.classList.remove('hidden');
+        })
+        .catch(err => { alert('Signup failed: ' + err.message); });
+    });
+
+    newPlaceForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const newCityName = newPlaceInput.value.trim();
+
+        if (!newCityName) { return; }
+
+        // Capitalize for consistency
+        const formattedCityName = newCityName.charAt(0).toUpperCase() + newCityName.slice(1).toLowerCase();
+
+        // Check if it already exists
+        const cityExists = Object.keys(CITIES_DATA).some(c => c.toLowerCase() === formattedCityName.toLowerCase());
+
+        if (!cityExists) {
+            // Add to our data object (the "Blank Canvas")
+            CITIES_DATA[formattedCityName] = { "places": [] };
+
+            // Create a new option and add it to the dropdown
+            const newOption = new Option(formattedCityName, formattedCityName, true, true);
+            $('#destination-select').find('option[value="add_new_place"]').before(newOption);
+        }
+
+        // Select the new (or existing) city
+        $('#destination-select').val(formattedCityName).trigger('change');
+
+        // Hide the dialog and reset views
+        newPlaceInput.value = '';
+        authDialog.classList.add('hidden');
+        newPlaceView.classList.add('hidden');
+        loginView.classList.remove('hidden');
+    });
+
+    // --- Trip Setup (Wizard) ---
+    function populateDestinations() {
+      const cities = Object.keys(CITIES_DATA).sort();
+      destinationSelect.innerHTML = '<option></option>';
+      cities.forEach(city => {
+        const opt = document.createElement('option');
+        opt.value = city;
+        opt.textContent = city;
+        destinationSelect.appendChild(opt);
+      });
+      gemCitySelect.innerHTML = optionsHtml;
+      const addNewOpt = document.createElement('option');
+      addNewOpt.value = 'add_new_place';
+      addNewOpt.textContent = '＋ Add a new place';
+      destinationSelect.appendChild(addNewOpt);
+
+      $(destinationSelect).select2({ placeholder: "Search or select a city", allowClear: true, width: '100%' });
+      $(gemCitySelect).select2({ placeholder: "Select the city for your gem", allowClear: true, width: '100%' }); // [NEW]
+    }
+
+    // [BUG FIX] This function now saves trip details specific to the destination.
+    createTripBtn.addEventListener('click', () => {
+      const destination = $(destinationSelect).val();
+      const budget = parseInt(document.getElementById('budget').value || 0);
+      const duration = parseInt(document.getElementById('duration').value || 1);
+      const members = parseInt(document.getElementById('members').value || 1);
+      if (!destination || !CITIES_DATA[destination]) { alert('Please select a valid city.'); return; }
+      
+      tripDetails = { destination, budget, duration, members, startDate: new Date().toISOString() };
+      // Save details and itinerary per destination
+      localStorage.setItem(`tripDetails_${destination}`, JSON.stringify(tripDetails));
+      localStorage.setItem(`itineraryItems_${destination}`, JSON.stringify([]));
+      // Set the current active trip
+      localStorage.setItem('currentTripDestination', destination);
+      
+      showPlanner();
+    });
+
+    const AUTHENTICITY_TYPE_WEIGHTS = {
+        'Artisan': 95, 'Storytelling': 90, 'Local Food': 85, 'Culture': 70, 'Art': 65, 'Experience': 60,
+        'Nature': 55, 'Trekking': 50, 'Scenic': 45, 'Architecture': 40, 'Museum': 35,
+        'Historic': 30, 'Religious': 25, 'Leisure': 20, 'Shopping': 15,
+        'default': 50
+    };
+
+    function getAllItineraryItems() {
+        return Object.keys(localStorage)
+            .filter(key => key.startsWith('itineraryItems_'))
+            .map(key => JSON.parse(localStorage.getItem(key)))
+            .flat();
+    }
+
+    function calculateAuthenticity(place, allItineraryItems) {
+        const typeWeight = AUTHENTICITY_TYPE_WEIGHTS[place.type] || AUTHENTICITY_TYPE_WEIGHTS['default'];
+        const popularity = allItineraryItems.filter(item => item.place === place.name).length;
+        // Score is higher for niche types and lower for popular items.
+        // The formula gives a high base score for niche types and slowly reduces it with popularity.
+        let score = Math.max(10, typeWeight - (popularity * 5) - (Math.log1p(popularity) * 10));
+        return Math.round(Math.min(99, score)); // Cap score at 99
+    }
+
+    function calculateCrowdingIndex(destination, allItineraryItems) {
+        const itemCount = allItineraryItems.filter(item => {
+            const itemTripKey = `tripDetails_${item.city || destination}`;
+            const trip = JSON.parse(localStorage.getItem(itemTripKey));
+            return trip && trip.destination === destination;
+        }).length;
+        
+        let level = 'Low';
+        if (itemCount > 15) {
+            level = 'High';
+        } else if (itemCount > 5) {
+            level = 'Moderate';
+        }
+        return { level, value: itemCount };
+    }
+
+    // --- Planner UI Logic ---
+    function showPlanner() {
+      setupSection.classList.add('hidden');
+      plannerSection.classList.remove('hidden');
+      extraSections.classList.remove('hidden');
+      signOutBtnWizard.classList.add('hidden');    // <-- ADD THIS
+      signOutBtnPlanner.classList.remove('hidden');
+      initializePlanner();
+    }
+
+    newTripBtn.addEventListener('click', e => {
+      e.preventDefault();
+      if (!confirm('Start a new trip?')) return;
+      // Clear all trip-related data for a fresh start
+      localStorage.removeItem('currentTripDestination');
+      // A more thorough clean-up could loop through all tripDetails keys, but this is sufficient for the wizard to show.
+      plannerSection.classList.add('hidden');
+      extraSections.classList.add('hidden');
+      setupSection.classList.remove('hidden');
+
+      document.getElementById('homepage').classList.add('hidden');
+      wizard.classList.remove('hidden');
+      signOutBtnPlanner.classList.add('hidden');
+      signOutBtnWizard.classList.remove('hidden');
+
+      $(destinationSelect).val(null).trigger('change');
+    });
+
+    // [BUG FIX] This function now loads data for the currently active trip.
+    function initializePlanner() {
+      const currentDestination = localStorage.getItem('currentTripDestination');
+      if (!currentDestination) { location.reload(); return; }
+
+      tripDetails = JSON.parse(localStorage.getItem(`tripDetails_${currentDestination}`) || 'null');
+      if (!tripDetails) { location.reload(); return; }
+      
+      itineraryItems = JSON.parse(localStorage.getItem(`itineraryItems_${currentDestination}`) || '[]');
+      tripDestinationTitle.textContent = `Your Trip to ${tripDetails.destination}`;
+
+      const allItineraryItems = getAllItineraryItems();
+      renderSuggestions(tripDetails.destination, allItineraryItems);
+      renderCrowding(tripDetails.destination, allItineraryItems);
+
+      renderItinerary();
+      updateSummary();
+      updateDaysProgress();
+      renderExtrasForCurrentTrip();
+    }
+
+    // --- Rendering Functions ---
+    function renderSuggestions(destination, allItineraryItems) {
+      suggestionsContainer.innerHTML = '';
+      const cityData = CITIES_DATA[destination];
+      const localGems = JSON.parse(localStorage.getItem('localGems') || '[]').filter(gem => gem.city === destination);
+      const allPlaces = [...(cityData.places || []), ...localGems];
+
+      if (!allPlaces.length) {
+        suggestionsContainer.innerHTML = '<p class="empty-state">No suggestions available for this city.</p>';
+        return;
+      }
+      allPlaces.forEach(p => {
+        const authenticityScore = calculateAuthenticity(p, allItineraryItems);
+        const card = document.createElement('div');
+        card.className = 'suggestion-card';
+        card.innerHTML = `<h4>${escapeHtml(p.name)} <span class="place-type">${escapeHtml(p.type)}</span></h4>
+                          <p style="color:var(--text-secondary); font-size:0.9rem;">${escapeHtml(p.description)}</p>
+                          <div class="authenticity-score-container">
+                              Authenticity Score: <strong>${authenticityScore}%</strong>
+                              <div class="authenticity-score-bar">
+                                  <div class="authenticity-score-fill" style="width: ${authenticityScore}%;"></div>
+                              </div>
+                          </div>
+                          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.8rem">
+                            <div style="font-weight:600;">Est. ₹${Number(p.estimatedCost || 0).toLocaleString()}</div>
+                            <button class="add-suggestion-btn" data-name="${escapeAttr(p.name)}" data-cost="${Number(p.estimatedCost || 0)}">Add</button>
+                          </div>`;
+        suggestionsContainer.appendChild(card);
+      });
+    }
+
+    function renderCrowding(destination, allItineraryItems) {
+        const crowding = calculateCrowdingIndex(destination, allItineraryItems);
+        crowdingIndexBadge.textContent = crowding.level;
+        crowdingIndexBadge.className = ''; // Reset classes
+        crowdingIndexBadge.classList.add(`crowding-${crowding.level.toLowerCase()}`);
+    }
+
+    function renderItinerary() {
+      itineraryList.innerHTML = '';
+      if (!itineraryItems.length) {
+        itineraryList.innerHTML = '<p class="empty-state">Your itinerary is empty. Add items to get started.</p>';
+        return;
+      }
+      itineraryItems.sort((a, b) => new Date(a.date) - new Date(b.date));
+      itineraryItems.forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'itinerary-item';
+        let html = '';
+        if (item.type === 'hotel') {
+          const formatted = new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+          html = `<div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                      <h4 style="margin:0">${escapeHtml(item.name)} <span style="font-size:.9rem;color:var(--text-secondary)">(Hotel)</span></h4>
+                      <div style="color:var(--text-secondary);font-size:.9rem">Check-in: ${formatted} • ${item.nights} night(s) • ${item.people} person(s)</div>
+                    </div>
+                    <div style="text-align:right"><div style="font-weight:700; font-size: 1.1rem;">₹${Number(item.cost || 0).toLocaleString()}</div><button class="remove-btn" data-id="${item.id}">Remove</button></div>
+                  </div>`;
+        } else {
+          const formatted = item.date ? new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'No date';
+          html = `<div style="display:flex;justify-content:space-between;align-items:flex-start">
+                    <div>
+                      <h4 style="margin:0">${escapeHtml(item.place)}</h4>
+                      <div style="color:var(--text-secondary);font-size:.9rem">${formatted}</div>
+                      ${item.notes ? `<div style="color:var(--text-primary); margin-top:.4rem; font-size:0.95rem;">${escapeHtml(item.notes)}</div>` : ''}
+                    </div>
+                    <div style="text-align:right">
+                      <div style="font-weight:700; font-size: 1.1rem;">₹${Number(item.cost || 0).toLocaleString()}</div>
+                      <button class="remove-btn" data-id="${item.id}">Remove</button>
+                    </div>
+                  </div>`;
+        }
+        el.innerHTML = html;
+        itineraryList.appendChild(el);
+      });
+    }
+
+    function updateSummary() {
+      const totalSpent = itineraryItems.reduce((acc, i) => acc + (Number(i.cost) || 0), 0);
+      const remaining = (tripDetails.budget || 0) - totalSpent;
+      totalBudgetEl.textContent = `₹${(tripDetails.budget || 0).toLocaleString()}`;
+      amountSpentEl.textContent = `₹${totalSpent.toLocaleString()}`;
+      budgetRemainingEl.textContent = `₹${remaining.toLocaleString()}`;
+      let percent = tripDetails.budget > 0 ? (totalSpent / tripDetails.budget) * 100 : 0;
+      percent = Math.max(0, percent);
+      budgetProgressBar.style.width = Math.min(100, percent) + '%';
+      budgetProgressText.textContent = `${Math.round(percent)}% Spent`;
+      budgetProgressBar.style.background = (percent > 100) ? '#e76f51' : 'var(--accent-gradient)';
+    }
+
+    function updateDaysProgress() {
+        const duration = tripDetails.duration || 1;
+        if (!itineraryItems || itineraryItems.length === 0) {
+            daysProgressBar.style.width = '0%';
+            daysProgressText.textContent = `Day 0 of ${duration}`;
+            return;
+        }
+        const dates = itineraryItems.map(i => i.date ? new Date(i.date) : null).filter(Boolean);
+        if (dates.length === 0) {
+            daysProgressBar.style.width = '0%';
+            daysProgressText.textContent = `Day 0 of ${duration}`;
+            return;
+        }
+        const tripStartDate = new Date(Math.min.apply(null, dates));
+        const today = new Date();
+        tripStartDate.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+
+        let elapsedDays = 0;
+        if (today >= tripStartDate) {
+            elapsedDays = Math.floor((today - tripStartDate) / (1000 * 60 * 60 * 24)) + 1;
+        }
+        
+        elapsedDays = Math.max(0, Math.min(elapsedDays, duration));
+        const pct = duration > 0 ? (elapsedDays / duration) * 100 : 0;
+        daysProgressBar.style.width = `${pct}%`;
+        daysProgressText.textContent = `Day ${elapsedDays} of ${duration}`;
+    }
+
+    function addItineraryItem(item) {
+      itineraryItems.push(item);
+      localStorage.setItem(`itineraryItems_${tripDetails.destination}`, JSON.stringify(itineraryItems));
+      renderItinerary();
+      updateSummary();
+      updateDaysProgress();
+      renderCrowding(tripDetails.destination, getAllItineraryItems());
+    }
+    
+    // --- Event Handlers for Adding/Removing Items ---
+    addItemBtn.addEventListener('click', () => {
+      const place = placeInput.value.trim();
+      const date = dateInput.value;
+      const cost = Number(costInput.value || 0);
+      const notes = notesInput.value.trim();
+      if (!place || !date) { alert('Please enter a place and a date.'); return; }
+      addItineraryItem({ id: Date.now(), type: 'activity', place, date, cost, notes });
+      placeInput.value = ''; dateInput.value = ''; costInput.value = ''; notesInput.value = '';
+      placeInput.focus();
+    });
+
+    addHotelBtn.addEventListener('click', () => {
+      const name = hotelNameInput.value.trim();
+      const date = hotelCheckinInput.value;
+      const nights = Number(hotelNightsInput.value || 1);
+      const cost = Number(hotelCostInput.value || 0);
+      const people = Number(hotelPeopleInput.value || 1);
+      if (!name || !date) { alert('Please fill hotel name and check-in date.'); return; }
+      
+      const hotelItem = { id: Date.now(), type: 'hotel', name, date, nights, cost, people, city: tripDetails.destination };
+      addItineraryItem(hotelItem);
+      
+      const savedHotels = JSON.parse(localStorage.getItem('savedHotels') || '[]');
+      savedHotels.push(hotelItem);
+      localStorage.setItem('savedHotels', JSON.stringify(savedHotels));
+      renderAccommodations(tripDetails.destination);
+      
+      hotelNameInput.value = ''; hotelCheckinInput.value = ''; hotelNightsInput.value = ''; hotelCostInput.value = ''; hotelPeopleInput.value = '';
+    });
+
+    suggestionsContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.add-suggestion-btn');
+      if (btn) {
+        const baseCost = Number(btn.dataset.cost || 0);
+        const numMembers = tripDetails.members || 1; // Get number of travellers
+        const totalCost = baseCost * numMembers;      // Calculate total cost
+
+        placeInput.value = btn.dataset.name;
+        costInput.value = totalCost; // Set the input to the new total cost
+        dateInput.focus();
+      }
+    });
+
+    itineraryList.addEventListener('click', (e) => {
+      const rem = e.target.closest('.remove-btn');
+      if (rem) {
+        const id = Number(rem.dataset.id);
+        const itemToRemove = itineraryItems.find(i => i.id === id);
+        
+        itineraryItems = itineraryItems.filter(i => i.id !== id);
+        localStorage.setItem(`itineraryItems_${tripDetails.destination}`, JSON.stringify(itineraryItems));
+        
+        if (itemToRemove && itemToRemove.type === 'hotel') {
+            const savedHotels = JSON.parse(localStorage.getItem('savedHotels') || '[]');
+            localStorage.setItem('savedHotels', JSON.stringify(savedHotels.filter(h => h.id !== id)));
+            renderAccommodations(tripDetails.destination);
+        }
+        
+        renderItinerary();
+        updateSummary();
+        updateDaysProgress();
+
+        renderCrowding(tripDetails.destination, getAllItineraryItems());
+      }
+    });
+
+    localGemForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const newGem = {
+            name: document.getElementById('gem-name').value,
+            city: $(gemCitySelect).val(),
+            type: document.getElementById('gem-type').value,
+            description: document.getElementById('gem-description').value,
+            estimatedCost: 0,
+            isLocalGem: true
+        };
+
+        if (!newGem.name || !newGem.city || !newGem.type || !newGem.description) {
+            alert('Please fill out all fields for the local discovery.');
+            return;
+        }
+
+        const localGems = JSON.parse(localStorage.getItem('localGems') || '[]');
+        localGems.push(newGem);
+        localStorage.setItem('localGems', JSON.stringify(localGems));
+
+        alert(`'${newGem.name}' has been added to the suggestions for ${newGem.city}!`);
+        localGemForm.reset();
+        $(gemCitySelect).val(null).trigger('change');
+
+        // Refresh suggestions if the new gem is for the currently viewed city
+        if (tripDetails && newGem.city === tripDetails.destination) {
+            renderSuggestions(tripDetails.destination, getAllItineraryItems());
+        }
+    });
+
+    const handleSignOut = () => {
+      signOut(auth).then(() => {
+        // Sign-out successful.
+        // Clear all trip data from local storage
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith('tripDetails_') || key.startsWith('itineraryItems_') || key === 'savedHotels' || key === 'currentTripDestination') {
+            localStorage.removeItem(key);
+          }
+        });
+        // Reload the page to go back to the homepage
+        location.reload();
+      }).catch((error) => {
+        // An error happened.
+        console.error('Sign out error', error);
+        alert('Could not sign out. Please try again.');
+      });
+    };
+
+    signOutBtnWizard.addEventListener('click', handleSignOut);
+    signOutBtnPlanner.addEventListener('click', handleSignOut);
+
+    // --- Extra Sections ---
+    function renderExtrasForCurrentTrip() {
+        if (!tripDetails) { extraSections.classList.add('hidden'); return; }
+        renderMapFor(tripDetails.destination);
+        renderMyTrips();
+        renderAccommodations(tripDetails.destination);
+    }
+
+    // [FIXED] Corrected Google Maps embed URL.
+    function renderMapFor(city) {
+        document.getElementById('city-map').src = `https://www.google.com/maps?q=${encodeURIComponent(city)}&output=embed`;
+    }
+
+    function renderMyTrips() {
+      const container = document.getElementById('my-trips-container');
+      container.innerHTML = '';
+      const keys = Object.keys(localStorage).filter(k => k.startsWith('tripDetails_'));
+      if (keys.length === 0) { container.innerHTML = '<div style="color:var(--text-secondary)">No other saved trips found.</div>'; return; }
+      keys.forEach(k => {
+        const dest = k.replace('tripDetails_', '');
+        container.appendChild(createTripCard(dest));
+      });
+    }
+
+    function createTripCard(dest) {
+      const card = document.createElement('div');
+      card.style.cssText = `background: var(--surface-glass); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md);`;
+      card.innerHTML = `<div style="margin-bottom:.5rem"><strong style="display:block">${escapeHtml(dest)}</strong></div>
+        <div style="display:flex;gap:.5rem">
+            <button class="small-btn" data-dest="${escapeAttr(dest)}" onclick="window.odyssey.jumpToPlanner(event)" style="flex:1; padding:0.4rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius:8px; color:var(--text-primary); cursor:pointer;">Open</button>
+            <button class="small-btn" data-dest="${escapeAttr(dest)}" onclick="window.odyssey.deleteTrip(event)" style="padding:0.4rem 0.6rem; background:transparent; border:none; color:var(--text-secondary); cursor:pointer;">✕</button>
+        </div>`;
+      return card;
+    }
+
+    window.odyssey = {
+      // [BUG FIX] This function now correctly switches to a saved trip without hardcoding the budget.
+      jumpToPlanner: function(e) {
+        const dest = e.currentTarget.dataset.dest;
+        localStorage.setItem('currentTripDestination', dest);
+        location.reload();
+      },
+      // [BUG FIX] This function now also deletes the trip details along with the itinerary.
+      deleteTrip: function(e) {
+        const dest = e.currentTarget.dataset.dest;
+        if (!confirm(`Delete your trip to ${dest}? This cannot be undone.`)) return;
+        localStorage.removeItem(`itineraryItems_${dest}`);
+        localStorage.removeItem(`tripDetails_${dest}`);
+
+        const savedHotels = JSON.parse(localStorage.getItem('savedHotels') || '[]');
+        localStorage.setItem('savedHotels', JSON.stringify(savedHotels.filter(h => h.city !== dest)));
+        
+        // If the deleted trip was the current one, go back to the setup screen
+        if (localStorage.getItem('currentTripDestination') === dest) {
+          localStorage.removeItem('currentTripDestination');
+          location.reload();
+        } else {
+          renderMyTrips();
+          renderAccommodations(tripDetails.destination);
+        }
+      }
+    };
+    
+    function renderAccommodations(city) {
+      const container = document.getElementById('accommodations-container');
+      container.innerHTML = '';
+      const savedHotels = JSON.parse(localStorage.getItem('savedHotels') || '[]').filter(h => h.city === city);
+      if (savedHotels.length === 0) { container.innerHTML = '<div style="color:var(--text-secondary)">No accommodations saved for this trip.</div>'; return; }
+      savedHotels.forEach(h => {
+        const card = document.createElement('div');
+        card.style.cssText = `background: var(--surface-glass); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md);`;
+        card.innerHTML = `<div><strong>${escapeHtml(h.name)}</strong><div style="color:var(--text-secondary);font-size:.9rem">Check-in: ${new Date(h.date).toLocaleDateString('en-IN')} • ${h.nights} nights</div></div>
+          <div style="margin-top:.6rem; font-weight:600;">₹${Number(h.cost||0).toLocaleString()}</div>`;
+        container.appendChild(card);
+      });
+    }
+
+    // --- Initial Load ---
+    // [BUG FIX] The app now loads the specific trip marked as 'current'.
+    (function init() {
+      populateDestinations();
+      const currentDestination = localStorage.getItem('currentTripDestination');
+      if (currentDestination && localStorage.getItem(`tripDetails_${currentDestination}`)) {
+        showPlanner();
+        signOutBtnPlanner.classList.remove('hidden'); 
+      } else {
+        setupSection.classList.remove('hidden');
+        plannerSection.classList.add('hidden');
+        extraSections.classList.add('hidden');
+      }
+    })();
+  });
+</script>
+
+</body>
+</html>
