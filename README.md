@@ -19,8 +19,3 @@ Odyssey is a modern and aesthetic trip planning web application designed for Ind
 1. Download the repository
 2. Open index.html in your browser
 
-## 🌐 Live Demo
-(Enable GitHub Pages after upload)
-
-## 👤 Author
-Surya Prakash S
